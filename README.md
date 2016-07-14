@@ -11,7 +11,7 @@ This is an extension for quantmod framework to simplify working with Russian sto
 
 Практические примеры применения можно найти:
 
-В нашем блоге: http://rusquant.ru/blog/
+В блоге официального сайта: http://rusquant.ru/blog/
 На персональной странице Сергея Едунова:http://www.algorithmist.ru/p/rusquant.html
 В Пермской группе пользователей R: http://r-group.mifit.ru/
 В блоге сайта infoption.ru:  http://infoption.ru/search/rusquant
