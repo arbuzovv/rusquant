@@ -1,3 +1,116 @@
+#function retrives data from poloniex through its public API
+"getSymbols.Poloniex" <- function #S3 function (Poloniex is a class of first argument)
+(Symbols,env,return.class='xts',index.class='Date',
+ from='2007-01-01',
+ to=Sys.Date(),
+ adjust=FALSE,
+ period='day',
+ ...)
+{
+	importDefaults("getSymbols.Poloniex"); #rewrite default values if specified by setDefaults
+	local_env <- environment()
+	for(var in names(list(...))) {
+		# import all named elements that are NON formals
+		assign(var, list(...)[[var]], local_env)
+	}
+
+	options(warn = -1)
+	default.return.class <- return.class
+	default.from <- from
+	default.to <- to
+
+	if(missing(verbose)) verbose <- TRUE
+	if(missing(auto.assign)) auto.assign <- FALSE
+	
+	Polo.period <- 0
+	Polo.max_candles <- 1000
+	Polo.from <- as.numeric(as.POSIXct(from)) #convert to UNIX timestamp
+	Polo.to <- as.numeric(as.POSIXct(to)) #convert to UNIX timestamp
+
+	Polo.downloadUrl <- 'https://poloniex.com/public?command=returnChartData'
+
+	switch(period, #select candle period according to data frequency
+		 '5min' = {
+		   Polo.period <- 300
+		 },
+		 '15min' = {
+		   Polo.period <- 900
+		 },
+		 '30min' = {
+		   Polo.period <- 1800
+		 },
+		 '2hours' = {
+		   Polo.period <- 7200
+		 },
+		 '4hours' = {
+		   Polo.period <- 14400
+		 },
+		 'day' = {
+		   Polo.period <- 86400
+		 }
+	)
+
+	#example API usage
+	#"https://poloniex.com/public?command=returnChartData&currencyPair=USDT_BTC&period=7200&start=1468711470&end=1468757470"
+	
+	for(i in 1:length(Symbols)) {
+		Polo.url <- paste(Polo.downloadUrl,
+                        "&currencyPair=", Symbols[[i]],
+                        "&period=", Polo.period,
+                        "&start=", Polo.from,
+                        "&end=", Polo.to, sep="")
+		tmp <- tempfile()
+		download.file(Polo.url, destfile = tmp, quiet = TRUE) #get JSON object
+		rawdata <- readLines(tmp) #read raw data from file
+		if(substr(rawdata, 3, 7) == 'error') {
+		  
+		  stop(paste('Error!', substr(rawdata, 11, nchar(rawdata) - 2)))
+		}
+		
+		#parsing JSON object
+		str_obs <- strsplit(rawdata, split = "},{", fixed = TRUE)
+		str_obs[[1]][1] <- substr(str_obs[[1]][1], 3, nchar(str_obs[[1]][1]))
+		temp <- str_obs[[1]][length(str_obs[[1]])]
+		substr(temp, 1, nchar(temp)-2) -> str_obs[[1]][length(str_obs[[1]])]
+		
+		ticker_header <- c('date', 'high', 'low', 'open', 'close', 'volume')
+		ticker_length <- length(ticker_header)
+		lst <- list()
+		
+		for(j in 1:length(str_obs[[1]])) {
+		  str <- str_obs[[1]][j]
+		  str_par <- strsplit(str, ",", fixed = TRUE)
+		  vec_row <- c()
+		  for(k in 1:ticker_length){
+		    vec_row <- append(vec_row, values = substr(str_par[[1]][k], 4+nchar(ticker_header[k]), nchar(str_par[[1]][k])))
+		  }
+		  
+		  lst[[length(lst)+1]] <- vec_row
+		}
+		
+		res <- do.call(rbind.data.frame, lst)
+		names(res) <- ticker_header
+		
+		nts <- xts(apply(res[,2:length(res)], 2, as.numeric),
+		           as.POSIXct(as.numeric(as.character(res[, 1])), origin="1970-01-01", tz ="GMT"))
+		
+		fr <- convert.time.series(fr=nts, return.class=return.class)
+		
+		Symbols[[i]] <-toupper(gsub('\\^','',Symbols[[i]]))
+		
+		if(auto.assign){
+		  assign(Symbols[[i]], fr, env)
+		}
+		
+	}
+	
+	if(auto.assign){
+		return(Symbols)
+	}
+
+	return(fr)
+}
+
 #function retrives data from alortrade broker
 "getSymbols.Alor" <- function #S3 function (Alor is a class of first argument)
 (Symbols,env,return.class='xts',index.class='Date',
@@ -106,11 +219,6 @@
     
     if(auto.assign){
       assign(Symbols[[i]], fr, env)
-    }
-    
-    if(i >= 5 && length(Symbols) > 5) {
-      message("pausing 1 second between requests for more than 5 symbols")
-      Sys.sleep(1)
     }
   }
   
