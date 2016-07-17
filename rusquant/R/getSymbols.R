@@ -1,3 +1,127 @@
+#function retrives data from alortrade broker
+"getSymbols.Alor" <- function #S3 function (Alor is a class of first argument)
+(Symbols,env,return.class='xts',index.class='Date',
+ from='2007-01-01',
+ to=Sys.Date(),
+ adjust=FALSE,
+ period='day',
+ ...)
+{
+  importDefaults("getSymbols.Alor"); #rewrite default values if specified by setDefaults
+  local_env <- environment()
+  for(var in names(list(...))) {
+    # import all named elements that are NON formals
+    assign(var, list(...)[[var]], local_env)
+  }
+  
+  options(warn = -1)
+  default.return.class <- return.class
+  default.from <- from
+  default.to <- to
+  
+  if(missing(verbose)) verbose <- TRUE
+  if(missing(auto.assign)) auto.assign <- FALSE
+  board <- "MICEX" #data is grabbed from Moscow Exchange by default
+  
+  Alor.period <- 0
+  Alor.max_candles <- 1000
+  Alor.from <- as.POSIXct(from)
+  Alor.to <- as.POSIXct(to)
+  
+  Alor.downloadUrl <- 'http://history.alor.ru/?'
+  
+  switch(period, #select candle period according to data frequency
+         'tick' = {
+           Alor.period <- 0
+         },
+         '1min' = {
+           Alor.period <- 1
+         },
+         '5min' = {
+           Alor.period <- 5
+         },
+         '10min' = {
+           Alor.period <- 10
+         },
+         '15min' = {
+           Alor.period <- 15
+         },
+         '20min' = {
+           Alor.period <- 20
+         },
+         '30min' = {
+           Alor.period <- 30
+         },
+         'hour' = {
+           Alor.period <- 60
+         },
+         'day' = {
+           Alor.period <- 1440
+         }
+  )
+  
+  #example of request
+  #http://history.alor.ru/?board=MICEX&ticker=LKOH&period=5&from=2016-03-21&to=2016-07-12&bars=5
+  
+  result <- as.null()
+  
+  for(i in 1:length(Symbols)) {
+    #building request to a REST service
+    #bypassing 1000 obs restriction
+    repeat
+    {
+      Alor.url <- paste(Alor.downloadUrl, "board=", board,
+                        "&ticker=", Symbols[[i]],
+                        "&period=", Alor.period,
+                        "&from=", Alor.from,
+                        "&to=", Alor.to,
+                        "&bars=",Alor.max_candles)
+      
+      temp <- tempfile()
+      download.file(Alor.url, destfile = temp, quiet = TRUE) #request to a service
+      #reading result as a table
+      res <- read.table(temp, header = FALSE, col.names = c('Date', 'Time', 'Open', 'High', 'Low', 'Close', 'Volume'))
+      res$Date <- paste(res$Date, " ", res$Time) #merge time a date columns
+      res[,!(names(res) == 'Time')] #remove time column
+      unlink(temp) #release resource
+      
+      #if responce returns same date break a loop
+      if(!is.null(result)){
+        if(result$Date[1] == res$Date[nrow(res)]){
+          break;
+        }
+      }
+      
+      Alor.to <- as.POSIXct(res$Date[nrow(res)]) + Alor.period * 60 #update a date of observation
+      result <- if(is.null(result)) res[order(res$Date), ] else merge(result, res, all=TRUE)
+      
+      Sys.sleep(0.01) #delay between requests
+    }
+    
+    #build xts time series
+    newts <- xts(apply(result[,3:length(result)], 2, as.numeric) , as.POSIXct(result[, 1]))
+    fr <- convert.time.series(fr=newts,return.class=return.class)
+    
+    Symbols[[i]] <-toupper(gsub('\\^','',Symbols[[i]]))
+    
+    if(auto.assign){
+      assign(Symbols[[i]], fr, env)
+    }
+    
+    if(i >= 5 && length(Symbols) > 5) {
+      message("pausing 1 second between requests for more than 5 symbols")
+      Sys.sleep(1)
+    }
+  }
+  
+  if(auto.assign){
+    return(Symbols)
+  }
+  
+  return(fr)
+}
+
+
 
 "getSymbols.rogov" <-
 function(Symbols,env,return.class='xts',index.class='Date',
