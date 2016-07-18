@@ -1,4 +1,6 @@
 export(getSymbols.Finam)
+export(getSymbols.Alor)
+export(getSymbols.Poloniex)
 export(getSymbols.mfd)
 export(getSymbols.rogov)
 export(getSymbols.Forts)
