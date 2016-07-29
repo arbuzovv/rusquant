@@ -623,8 +623,8 @@ function (verbose = FALSE){
     ids <- sub("var .*?= \\[", "", fr[1])
     ids <- sub("\\];", "", ids)
     ids <- strsplit(ids, ",")
-	
-	markets <- sub("var .*?= \\[", "", fr[4])
+    
+    markets <- sub("var .*?= \\[", "", fr[4])
     markets <- sub("\\];", "", markets)
     markets <- strsplit(markets, ",")
 
@@ -632,14 +632,15 @@ function (verbose = FALSE){
     names <- sub("\\];", "", names)
     names <- gsub("'", "", names)
     names <- strsplit(names, ",")
-	names[[1]]->names
-	names[-(11414)]->names
+    names[[1]]->names
+    names[-(11414)]->names
     res <- unlist(ids)
-	
-	data<-data.frame(names,res,markets)
-	data[data[,3]!=3,]->data
-	rbind(data[(data[,1]%in%data[data[,3]==1,1]) & data[,3]==1,],data[!(data[,1]%in%data[data[,3]==1,1]),])->data
-	data[,2]->res
+    names <- c(names, array('', length(res) - length(name)))
+
+    data<-data.frame(names,res,markets)
+    data[data[,3]!=3,]->data
+    rbind(data[(data[,1]%in%data[data[,3]==1,1]) & data[,3]==1,],data[!(data[,1]%in%data[data[,3]==1,1]),])->data
+    data[,2]->res
     names(res) <- data[,1]
     return(res)
 }
