@@ -1,4 +1,4 @@
-"loadStockListMfd" <-
+"loadStockList.Mfd" <-
     function (verbose = FALSE){
         library(RCurl)
         library(XML)
@@ -20,7 +20,7 @@
         return(res)
     }
 
-"loadStockListFinam" <-
+"loadStockList.Finam" <-
     function (verbose = FALSE){
         stocklist.URL = 'http://www.finam.ru/cache/icharts/icharts.js'
         tmp <- tempfile()
@@ -52,7 +52,7 @@
     }
 
 
-"loadStockListMoex" <-
+"loadStockList.Moex" <-
     function (verbose = FALSE, market=c("MOEX", "FORTS")){
         #STOCK
         if("MOEX" %in% market){
