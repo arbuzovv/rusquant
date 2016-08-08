@@ -634,9 +634,11 @@ function (verbose = FALSE){
     names <- strsplit(names, ",")
 	names[[1]]->names
 	names[-(11414)]->names
-    res <- unlist(ids)
+    res <- unlist(ids)	
+	markets<-unlist(markets)
 	
-	data<-data.frame(names,res,markets)
+	
+	data<-data.frame(names[1:min(length(res),length(names))],res[1:min(length(res),length(names))],markets[1:min(length(res),length(names))])
 	data[data[,3]!=3,]->data
 	rbind(data[(data[,1]%in%data[data[,3]==1,1]) & data[,3]==1,],data[!(data[,1]%in%data[data[,3]==1,1]),])->data
 	data[,2]->res
