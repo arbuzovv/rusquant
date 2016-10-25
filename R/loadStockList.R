@@ -52,27 +52,81 @@
     }
 
 
-"loadStockList.Moex" <-
-    function (verbose = FALSE, market=c("MOEX", "FORTS")){
-        #STOCK
-        if("MOEX" %in% market){
-            list.URL = "http://www.moex.com/iss/rms/engines/stock/objects/marketrates.csv?iss.only=object&limit=unlimited&sort_column=SECID&sort_order=ASC&security_types=common_share,preferred_share,depositary_receipt,ofz_bond,cb_bond,subfederal_bond,municipal_bond,corporate_bond,exchange_bond,ifi_bond,euro_bond,public_ppif,interval_ppif,private_ppif,stock_mortgage,etf_ppif&board_groups=stock_tplus,stock_ndm_tplus,stock_small_tplus,stock_qnv_tplus,stock_ndm_qnv_tplus,stock_d_tplus,stock_d_ndm_tplus,stock_t0,stock_ndm,stock_qnv,stock_ndm_qnv,stock_d_ndm,stock_bonds_d_main,stock_bonds_d_ndm,stock_darkpool,stock_b_spob,stock_b_psau,stock_b_auct,stock_b_psbb,stock_b_aubb,stock_repo_na,stock_repo_adr,stock_repo_shares,stock_repo_bonds,stock_repo_qnv&index=&listname=1,2,3,_&collateral=0&currencyid=&lang=ru"
-            tmp <- tempfile()
-            download.file(list.URL, destfile=tmp)
-            STOCKlist <- read.csv(tmp, sep=";", skip=2, quote = "", stringsAsFactors=FALSE)
-            unlink(tmp)
-            dataSTOCK<-data.frame(STOCKlist$ISIN, 
-                                  shortSymbol=STOCKlist$SECID,
-                                  shortName=STOCKlist$SHORTNAME, 
-                                  longName=STOCKlist$NAME,  
-                                  type=STOCKlist$TYPENAME,  
-                                  deliveryDate=STOCKlist$SETTLEDATE,
-                                  STOCKlist$REGISTRY_CLOSE_DATE, 
-                                  STOCKlist$LISTLEVEL
-            )
-        }
-        else
-            dataSTOCK<-dataFORTS
+"loadStockList" <-
+    function (src = 'MOEX',verbose = FALSE, market="shares"){
+        #MOEX - Moscow Exchange - Московская биржа        
+		if(src == 'MOEX'){
+			# full list of parameters: http://moex.com/iss/index.xml (trade_engine_name, market_name)
+			if(length(market) == 2)
+				market_type <- market 
+			if(length(market) == 1)
+				{
+				if(market == "shares")
+					market_type <- c('stock','shares') # Фондовый рынок - рынок акций
+				if(market == "bonds")
+					market_type <- c('stock','bonds') # Фондовый рынок - рынок облигаций
+				if(market == "index")
+					market_type <- c('stock','index') # Индексы фондового рынка
+				if(market == "forts_main")
+					market_type <- c('futures','main') # Срочный рынок - Срочные инструменты
+				if(market == "forts_futures")
+					market_type <- c('futures','forts') # Срочный рынок - ФОРТС
+				if(market == "forts_options")
+					market_type <- c('futures','options') # Срочный рынок - Опционы ФОРТС			
+				if(market == "currency")
+					market_type <- c('currency','selt') # Валютный рынок - SELT
+				if(market == "commodity")
+					market_type <- c('commodity','futures') # Товарный рынок - Секция стандартных контрактов АО НТБ						
+				}
+			if(length(market) > 2)
+				message('Unkown market')
+				
+			SymbolsList <- na.omit(data.frame(matrix(ncol = 7)))
+			names(SymbolsList) <- c("SECID", "SHORTNAME", "NAME", "BOARDID", "decimals", "history_from", "history_till")			
+			i <- 0
+			#download list of instrument	
+			while(length(SymbolsList[,1])%%100 == 0)
+			{
+			  list.URL = paste("http://moex.com/iss/history/engines/",market_type[1],"/markets/",market_type[2],"/listing.csv?start=",i*100,sep='')
+			  tmp <- tempfile()
+			  download.file(list.URL, destfile=tmp,quiet = TRUE)
+			  SymbolsList <- rbind(SymbolsList,read.csv(tmp, sep=";", skip=2, quote = "", stringsAsFactors=FALSE))
+			  i <- i+1
+			  unlink(tmp)
+			}
+			return(SymbolsList)
+		}
+		if(src == 'Finam'){
+			stocklist.URL = 'http://www.finam.ru/cache/icharts/icharts.js'
+			tmp <- tempfile()
+			download.file(stocklist.URL, destfile=tmp,quiet=!verbose)
+			fr <- readLines(con = tmp, warn=FALSE)
+			unlink(tmp)
+			ids <- sub("var .*?= \\[", "", fr[1])
+			ids <- sub("\\];", "", ids)
+			ids <- strsplit(ids, ",")
+			
+			markets <- sub("var .*?= \\[", "", fr[4])
+			markets <- sub("\\];", "", markets)
+			markets <- strsplit(markets, ",")
+			
+			names <- sub("var .*?= \\[", "", fr[3])
+			names <- sub("\\];", "", names)
+			names <- gsub("'", "", names)
+			names <- strsplit(names, ",")
+			names[[1]]->names
+			#	names[-(8497)]->names
+			res <- unlist(ids)
+			
+			data<-data.frame(names,res,markets)
+			data[data[,3]!=3,]->data
+			rbind(data[(data[,1]%in%data[data[,3]==1,1]) & data[,3]==1,],data[!(data[,1]%in%data[data[,3]==1,1]),])->data
+			data[,2]->res
+			names(res) <- data[,1]
+			return(res)
+		}
+		
+	        	
         
         
         #FORTS

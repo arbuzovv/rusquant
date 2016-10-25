@@ -339,30 +339,30 @@ for(i in 1:length(Symbols)) {
          Sys.sleep(1)
        }
      }
-	 print('The RogovIndex© indices and tools are proprietary to and distributed by Mikhail Rogov.' )
-	 print('All content of the Rogov Index© is proprietary to Mikhail Rogov Terms and Conditions of Access Provider at our discretion,')
-	 print('provide you with services including, but not restricted to, RogovIndex© indices and tools. ')
-	 print('You agree to comply with the conditions imposed on your use of the services, as set out in these Terms and Conditions of Access and elsewhere in our services. ')
-	 print('These services may be outside our control or provided by a third party in which in case we cannot take responsibility for their content, or for any delays,')
-	 print('interruptions or errors in the provisions of these additional services, provided we have exercised reasonable care and diligence in the selection of such ')
-	 print('providers.Certain data accessible on our services is the intellectual property of us. The data is protected by copyright and other intellectual laws ')
-	 print('and all ownership rights remain with us. You may only use the data retrieved from our services for your own purposes while accessing our services. ')
-	 print('Such use will be in accordance with these Terms and Conditions of Access and the requirements set out elsewhere on our services. You may not copy, distribute')
-	 print('or redistribute the data, including by caching, framing or similar means or sell, resell, re-transmit or otherwise make the data retrieved from our services')
-	 print('available in any manner to any third party.The data is provided "as is." We or any third party shall not be liable to you or any third party for any loss or damage,')
-	 print('direct, indirect or consequential, arising from (i) any inaccuracy or incompleteness in, or delays, interruptions, errors or omissions in the delivery of the data or any ')
-	 print('other information supplied to you through our services or (ii) any decision made or action taken by you or any third party in reliance upon the data. Third party nor we ')
-	 print('shall be liable for loss of business revenues, lost profits or any punitive, indirect, consequential, special or similar damages whatsoever, whether in contract, tort or ')
-	 print('otherwise, even if advised of the possibility of such damages incurred by you or any third party.Where the information consists of pricing or performance data, the data ')
-	 print('contained therein has been obtained from sources believed reliable. Data computations are not guaranteed by any information service provider, third party or us or any affiliates')
-	 print('and may not be complete. Neither any information service provider, third party or us give any warranties, as to the accuracy, adequacy, quality or fitness, timeless, ')
-	 print('non-infringement, title, of any information for a particular purpose or use and all such warranties are expressly excluded to the fullest extent that such warranties ')
-	 print('may be excluded by law. You bear all risk from any use or results of using any information.You are responsible for validating the integrity of any information received ')
-	 print('over the Internet.Transmission may be subject to arbitrary delays beyond our control, which may delay the provision of our services and the execution of your orders.')
-	 print('You acknowledge that neither any information service provider, third party nor we will be liable to you or any third party for any losses arising from such delay. ')
-	 print('In no event will any information provider, third party or we, be liable for any consequential loss including but not limited to special, incidental, direct or indirect ')
-	 print('damages resulting from delay or loss of use of our services. We are not responsible for any damage to your computer, software, modem, telephone or other property resulting ')
-	 print('from your use of our services.')
+	 #print('The RogovIndex© indices and tools are proprietary to and distributed by Mikhail Rogov.' )
+	 #print('All content of the Rogov Index© is proprietary to Mikhail Rogov Terms and Conditions of Access Provider at our discretion,')
+	 #print('provide you with services including, but not restricted to, RogovIndex© indices and tools. ')
+	 #print('You agree to comply with the conditions imposed on your use of the services, as set out in these Terms and Conditions of Access and elsewhere in our services. ')
+	 #print('These services may be outside our control or provided by a third party in which in case we cannot take responsibility for their content, or for any delays,')
+	 #print('interruptions or errors in the provisions of these additional services, provided we have exercised reasonable care and diligence in the selection of such ')
+	 #print('providers.Certain data accessible on our services is the intellectual property of us. The data is protected by copyright and other intellectual laws ')
+	 #print('and all ownership rights remain with us. You may only use the data retrieved from our services for your own purposes while accessing our services. ')
+	 #print('Such use will be in accordance with these Terms and Conditions of Access and the requirements set out elsewhere on our services. You may not copy, distribute')
+	 #print('or redistribute the data, including by caching, framing or similar means or sell, resell, re-transmit or otherwise make the data retrieved from our services')
+	 #print('available in any manner to any third party.The data is provided "as is." We or any third party shall not be liable to you or any third party for any loss or damage,')
+	 #print('direct, indirect or consequential, arising from (i) any inaccuracy or incompleteness in, or delays, interruptions, errors or omissions in the delivery of the data or any ')
+	 #print('other information supplied to you through our services or (ii) any decision made or action taken by you or any third party in reliance upon the data. Third party nor we ')
+	 #print('shall be liable for loss of business revenues, lost profits or any punitive, indirect, consequential, special or similar damages whatsoever, whether in contract, tort or ')
+	 #print('otherwise, even if advised of the possibility of such damages incurred by you or any third party.Where the information consists of pricing or performance data, the data ')
+	 #print('contained therein has been obtained from sources believed reliable. Data computations are not guaranteed by any information service provider, third party or us or any affiliates')
+	 #print('and may not be complete. Neither any information service provider, third party or us give any warranties, as to the accuracy, adequacy, quality or fitness, timeless, ')
+	 #print('non-infringement, title, of any information for a particular purpose or use and all such warranties are expressly excluded to the fullest extent that such warranties ')
+	 #print('may be excluded by law. You bear all risk from any use or results of using any information.You are responsible for validating the integrity of any information received ')
+	 #print('over the Internet.Transmission may be subject to arbitrary delays beyond our control, which may delay the provision of our services and the execution of your orders.')
+	 #print('You acknowledge that neither any information service provider, third party nor we will be liable to you or any third party for any losses arising from such delay. ')
+	 #print('In no event will any information provider, third party or we, be liable for any consequential loss including but not limited to special, incidental, direct or indirect ')
+	 #print('damages resulting from delay or loss of use of our services. We are not responsible for any damage to your computer, software, modem, telephone or other property resulting ')
+	 #print('from your use of our services.')
      if(auto.assign)
        return(Symbols)
 	
@@ -407,8 +407,8 @@ function(Symbols,env,return.class='xts',index.class='Date',
 
      if (p==0) {
         message(paste("Unkown period ", period))
-     }
-     finam.HOST <- '195.128.78.52'
+     }	 
+     finam.HOST <- 'export.finam.ru'
      finam.URL <- "/table.csv?d=d&market=1&f=table&e=.csv&dtf=1&tmf=1&MSOR=0&sep=1&sep2=1&at=1&"
 
      if (!exists("finam.stock.list")){
