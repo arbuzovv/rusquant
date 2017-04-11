@@ -615,7 +615,7 @@ fr <- xts(apply(as.matrix(fr[,(5:10)]),2, as.numeric), as.Date(strptime(fr[,3], 
 
 "loadStockList" <-
 function (verbose = FALSE){
-    stocklist.URL = 'http://www.finam.ru/cache/icharts/icharts.js'
+    stocklist.URL = 'https://www.finam.ru/cache/icharts/icharts.js'
     tmp <- tempfile()
     download.file(stocklist.URL, destfile=tmp,quiet=!verbose)
     fr <- readLines(con = tmp, warn=FALSE)
