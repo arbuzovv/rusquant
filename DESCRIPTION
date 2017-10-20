@@ -9,9 +9,6 @@ Suggests:
 Maintainer: Vyacheslav Arbuzov <arbuzov1989@gmail.com>
 Description: Rusquant is your data explorer in to the world of financial markets. 
 Current available data sources: 
-1) finance.yahoo.com, finance.google.com, oanda.com, fred.stlouisfed.org (from quantmod package)
-2) finam.ru, mfd.ru, hs.alorbroker.ru (Russian financial market)
-3) poloniex.com, coinmarketcap.com (Crypto)
 LazyLoad: yes
 License: GPL-3
 URL: http://www.rusquant.ru
