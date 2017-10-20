@@ -17,7 +17,7 @@ getSymbols(Symbols = NULL,  from='2007-01-01', to = Sys.Date(), src = "yahoo", p
 }
 \examples{
 \dontrun{
-getSymbols('USDT_BTC',src='Poloniex',from='2017-10-01',period='5mins')
+getSymbols('AFLT',src='Finam')
 }
 }
 \keyword{getSymbols}
