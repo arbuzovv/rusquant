@@ -1,13 +1,13 @@
 Package: rusquant
 Type: Package
-Title: Data explorer for financial markets
+Title: Your Data Explorer to financial world
 Version: 0.3.8
 Date: 2017-10-20
 Author: Sergey Edunov[cre, aut], Vyacheslav Arbuzov[cre, aut], Aleksey Kutergin[ctb]
 Depends: quantmod
 Suggests:
 Maintainer: Vyacheslav Arbuzov <arbuzov1989@gmail.com>
-Description: Rusquant is your data explorer in to the world of financial markets. 
+Description: Rusquant is data downloader from different data sources starting from Close price to order book, tradelog and orderlog. 
 Current available data sources: 
 Russian financial market:finam.ru, mfd.ru, hs.alorbroker.ru; Cryptomarkets:poloniex.com, coinmarketcap.com
 LazyLoad: yes
