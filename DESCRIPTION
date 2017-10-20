@@ -12,7 +12,6 @@ Currently availible data sources:
 - https://finance.yahoo.com ,https://finance.google.com ,https://www.oanda.com, https://fred.stlouisfed.org/ (from quantmod package)
 - https://www.finam.ru, http://mfd.ru/, https://hs.alorbroker.ru/ (Russian financial market)
 - https://www.poloniex.com/, https://coinmarketcap.com (Crypto)
-
 LazyLoad: yes
 License: GPL-3
 URL: 
