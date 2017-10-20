@@ -1,17 +1,25 @@
 Package: rusquant
 Type: Package
 Title: Financial Modelling Framework extension for Russian stock market
-Version: 0.3.7
-Date: 2013-11-27
-Author: Sergey Edunov, Vyacheslav Arbuzov
+Version: 0.3.8
+Date: 2017-10-20
+Author: Sergey Edunov[cre, aut], Vyacheslav Arbuzov[cre, aut], Aleksey Kutergin[ctb]
 Depends: quantmod
 Suggests:
-Maintainer: Sergey Edunov <edunov@gmail.com>, Vyacheslav Arbuzov <arbuzov1989@gmail.com>
-Description: This is an extension for quantmod framework to simplify working with Russian stock market
+Maintainer: Vyacheslav Arbuzov <arbuzov1989@gmail.com>
+Description: Rusquant is your data explorer in to the world of financial markets. 
+Currently availible data sources: 
+- yahoo.finance.com ,google/finance.com,oanda.com,FRED (quantmod)
+- finam.ru, mfd.ru, alor.ru (Russian financial market)
+- poloniex.com, btc-e.com (Crypto)
+- alphavantage.com (live data)
+
 LazyLoad: yes
 License: GPL-3
-URL: http://www.algorithmist.ru/search/label/rusquant
-        http://r-forge.r-project.org/projects/rusquant
+URL: 
+http://www.rusquant.ru
+http://www.algorithmist.ru/search/label/rusquant
+http://r-forge.r-project.org/projects/rusquant
 Packaged: 2013-05-05 22:57:08 UTC; rforge
 Repository: R-Forge
 Date/Publication: 2013-05-04 13:33:41

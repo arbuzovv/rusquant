@@ -1,4 +1,5 @@
-#function retrives data from poloniex through its public API
+
+#function retrives data from Poloniex through its public API
 "getSymbols.Poloniex" <- function #S3 function (Poloniex is a class of first argument)
 (Symbols,env,return.class='xts',index.class='Date',
  from='2007-01-01',
@@ -28,7 +29,7 @@
 	Polo.to <- as.numeric(as.POSIXct(to)) #convert to UNIX timestamp
 
 	Polo.downloadUrl <- 'https://poloniex.com/public?command=returnChartData'
-
+	
 	switch(period, #select candle period according to data frequency
 		 '5min' = {
 		   Polo.period <- 300
@@ -73,7 +74,7 @@
 		temp <- str_obs[[1]][length(str_obs[[1]])]
 		substr(temp, 1, nchar(temp)-2) -> str_obs[[1]][length(str_obs[[1]])]
 		
-		ticker_header <- c('date', 'high', 'low', 'open', 'close', 'volume')
+		ticker_header <- c('Date', 'High', 'Low', 'Open', 'Close', 'Volume')
 		ticker_length <- length(ticker_header)
 		lst <- list()
 		
@@ -91,8 +92,11 @@
 		res <- do.call(rbind.data.frame, lst)
 		names(res) <- ticker_header
 		
-		nts <- xts(apply(res[,2:length(res)], 2, as.numeric),
+		nts <- xts(apply(res[,c(4,2,3,5:length(res)) ], 2, as.numeric),
 		           as.POSIXct(as.numeric(as.character(res[, 1])), origin="1970-01-01", tz ="GMT"))
+		colnames(nts) <- paste(toupper(gsub('\\^','',Symbols[[i]])),
+		                      c('Open','High','Low','Close','Volume'),
+		                      sep='.')
 		
 		fr <- convert.time.series(fr=nts, return.class=return.class)
 		
@@ -101,7 +105,6 @@
 		if(auto.assign){
 		  assign(Symbols[[i]], fr, env)
 		}
-		
 	}
 	
 	if(auto.assign){
@@ -339,34 +342,8 @@ for(i in 1:length(Symbols)) {
          Sys.sleep(1)
        }
      }
-	 #print('The RogovIndex© indices and tools are proprietary to and distributed by Mikhail Rogov.' )
-	 #print('All content of the Rogov Index© is proprietary to Mikhail Rogov Terms and Conditions of Access Provider at our discretion,')
-	 #print('provide you with services including, but not restricted to, RogovIndex© indices and tools. ')
-	 #print('You agree to comply with the conditions imposed on your use of the services, as set out in these Terms and Conditions of Access and elsewhere in our services. ')
-	 #print('These services may be outside our control or provided by a third party in which in case we cannot take responsibility for their content, or for any delays,')
-	 #print('interruptions or errors in the provisions of these additional services, provided we have exercised reasonable care and diligence in the selection of such ')
-	 #print('providers.Certain data accessible on our services is the intellectual property of us. The data is protected by copyright and other intellectual laws ')
-	 #print('and all ownership rights remain with us. You may only use the data retrieved from our services for your own purposes while accessing our services. ')
-	 #print('Such use will be in accordance with these Terms and Conditions of Access and the requirements set out elsewhere on our services. You may not copy, distribute')
-	 #print('or redistribute the data, including by caching, framing or similar means or sell, resell, re-transmit or otherwise make the data retrieved from our services')
-	 #print('available in any manner to any third party.The data is provided "as is." We or any third party shall not be liable to you or any third party for any loss or damage,')
-	 #print('direct, indirect or consequential, arising from (i) any inaccuracy or incompleteness in, or delays, interruptions, errors or omissions in the delivery of the data or any ')
-	 #print('other information supplied to you through our services or (ii) any decision made or action taken by you or any third party in reliance upon the data. Third party nor we ')
-	 #print('shall be liable for loss of business revenues, lost profits or any punitive, indirect, consequential, special or similar damages whatsoever, whether in contract, tort or ')
-	 #print('otherwise, even if advised of the possibility of such damages incurred by you or any third party.Where the information consists of pricing or performance data, the data ')
-	 #print('contained therein has been obtained from sources believed reliable. Data computations are not guaranteed by any information service provider, third party or us or any affiliates')
-	 #print('and may not be complete. Neither any information service provider, third party or us give any warranties, as to the accuracy, adequacy, quality or fitness, timeless, ')
-	 #print('non-infringement, title, of any information for a particular purpose or use and all such warranties are expressly excluded to the fullest extent that such warranties ')
-	 #print('may be excluded by law. You bear all risk from any use or results of using any information.You are responsible for validating the integrity of any information received ')
-	 #print('over the Internet.Transmission may be subject to arbitrary delays beyond our control, which may delay the provision of our services and the execution of your orders.')
-	 #print('You acknowledge that neither any information service provider, third party nor we will be liable to you or any third party for any losses arising from such delay. ')
-	 #print('In no event will any information provider, third party or we, be liable for any consequential loss including but not limited to special, incidental, direct or indirect ')
-	 #print('damages resulting from delay or loss of use of our services. We are not responsible for any damage to your computer, software, modem, telephone or other property resulting ')
-	 #print('from your use of our services.')
      if(auto.assign)
        return(Symbols)
-	
-	
     return(fr)
 }
 
@@ -487,7 +464,6 @@ function(Symbols,env,return.class='xts',index.class='Date',
                              c('Open','High','Low','Close','Volume'),
                              sep='.')
        }
-
    
        fr <- convert.time.series(fr=fr,return.class=return.class)
        if(is.xts(fr) && p>7)
