@@ -17,5 +17,6 @@ getSymbols(Symbols = NULL,  from='2007-01-01', to = Sys.Date(), src = "yahoo", p
 }
 \examples{
 getSymbols('AFLT',src='Finam')
+getSymbols('USDT_BTC',src='Poloniex',from='2017-10-01',period='5mins')
 }
 \keyword{getSymbols}
