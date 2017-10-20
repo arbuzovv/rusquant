@@ -16,7 +16,9 @@ getSymbols(Symbols = NULL,  from='2007-01-01', to = Sys.Date(), src = "yahoo", p
   \item{period}{Calendar periods for Finam("tick","1min", "5min", "10min", "15min", "30min", "hour", "day", "week", "month"). Calendar periods for mfd("tick","1min", "5min", "10min", "15min", "30min","hour","day","week","month").  Calendar periods for Alor("tick","1min", "5min", "10min", "15min", "20min", "30min", "hour", "day").   Calendar periods for Poloniex("5min","15min", "30min", "2hours", "4hours", "day"). }	
 }
 \examples{
+\dontrun{
 getSymbols('AFLT',src='Finam')
 getSymbols('USDT_BTC',src='Poloniex',from='2017-10-01',period='5mins')
+}
 }
 \keyword{getSymbols}
