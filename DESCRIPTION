@@ -9,10 +9,9 @@ Suggests:
 Maintainer: Vyacheslav Arbuzov <arbuzov1989@gmail.com>
 Description: Rusquant is your data explorer in to the world of financial markets. 
 Currently availible data sources: 
-- yahoo.finance.com ,google/finance.com,oanda.com,FRED (quantmod)
-- finam.ru, mfd.ru, alor.ru (Russian financial market)
-- poloniex.com, btc-e.com (Crypto)
-- alphavantage.com (live data)
+- https://finance.yahoo.com ,https://finance.google.com ,https://www.oanda.com, https://fred.stlouisfed.org/ (from quantmod package)
+- https://www.finam.ru, http://mfd.ru/, https://hs.alorbroker.ru/ (Russian financial market)
+- https://www.poloniex.com/, https://coinmarketcap.com (Crypto)
 
 LazyLoad: yes
 License: GPL-3
