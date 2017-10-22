@@ -4,7 +4,7 @@
 (Symbols,env,return.class='xts',index.class='Date',
  from='2007-01-01',
  to=Sys.Date(),
- adjust=FALSE
+ adjust=FALSE,
  ...)
 {
         importDefaults("getTradelog"); #rewrite default values if specified by setDefaults
