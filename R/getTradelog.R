@@ -2,10 +2,10 @@
 #function retrives Tradelog data from Poloniex through its public API
 "getTradelog" <- function #S3 function (Poloniex is a class of first argument)
 (Symbols,env,return.class='xts',index.class='Date',
- from='2007-01-01',
+ from=Sys.Date(),
  to=Sys.Date(),
  adjust=FALSE,
- ...)
+ verbose=FALSE)
 {
         importDefaults("getTradelog"); #rewrite default values if specified by setDefaults
         local_env <- environment()
@@ -32,11 +32,12 @@
         
         for(i in 1:length(Symbols)) {
                 Polo.url <- paste(Polo.downloadUrl,
-                                  "&currencyPair=", Symbols[[i]],
+                                  "&currencyPair=", Symbols[i],
                                   "&start=", Polo.from,
                                   "&end=", Polo.to, sep="")
                 tmp <- tempfile()
-                download.file(Polo.url, destfile = tmp, quiet = TRUE) #get JSON object
+				if(verbose) print(Polo.url)
+                download.file(Polo.url, destfile = tmp, quiet = TRUE) #get JSON object				
                 rawdata <- readLines(tmp) #read raw data from file
                 if(substr(rawdata, 3, 7) == 'error') {
                         stop(paste('Error!', substr(rawdata, 11, nchar(rawdata) - 2)))
@@ -64,10 +65,10 @@
                 names(res) <- c('globalTradeID','TradeID','Price','Volume','Value','BuySell')
                 fr <- convert.time.series(fr = res, return.class=return.class)
                 
-                Symbols[[i]] <-toupper(gsub('\\^','',Symbols[[i]]))
+                Symbols[i] <-toupper(gsub('\\^','',Symbols[i]))
                 
                 if(auto.assign){
-                        assign(Symbols[[i]], fr, env)
+                        assign(Symbols[i], fr, env)
                 }
         }
         

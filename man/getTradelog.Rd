@@ -5,7 +5,7 @@
   Function to load and manage trade data.
 }
 \usage{
-getTradelog(Symbols = NULL,  from='2007-01-01', to = Sys.Date())
+getTradelog(Symbols = NULL,  from=Sys.Date(), to = Sys.Date())
 }
 \arguments{
   \item{Symbols}{a character vector specifying the names of each symbol (ticker) to be loaded.}
