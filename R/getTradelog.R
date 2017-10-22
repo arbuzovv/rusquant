@@ -65,10 +65,10 @@
                 names(res) <- c('globalTradeID','TradeID','Price','Volume','Value','BuySell')
                 fr <- convert.time.series(fr = res, return.class=return.class)
                 
-                Symbols[[i]] <-toupper(gsub('\\^','',Symbols[[i]]))
+                Symbols[i] <-toupper(gsub('\\^','',Symbols[i]))
                 
                 if(auto.assign){
-                        assign(Symbols[[i]], fr, env)
+                        assign(Symbols[i], fr, env)
                 }
         }
         
