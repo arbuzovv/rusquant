@@ -69,7 +69,7 @@
                 
                 Symbols[1] <-toupper(gsub('\\^','',Symbols[1]))
                 if(auto.assign){
-                        assign(Symbols[1], fr,env)
+                        assign(Symbols[1], fr,globalenv())
                 }
         }
         
