@@ -58,7 +58,11 @@
 				orderbook <- rbind(ask,bid)
 				orderbook$DateTime <- date_time
 				orderbook$Seq <- seq_orderbook
-				names(orderbook)[1:3] <- c('Price','Volume','isAsk')
+				names(orderbook)[1:3] <- c('Price','Volume','isAsk')			
+				orderbook[,Price:=as.numeric(Price),]
+				orderbook[,Volume:=as.numeric(Volume),]
+				orderbook[,isAsk:=as.numeric(isAsk),]
+				orderbook[,Seq:=as.numeric(Seq),]				
 				orderbook <- orderbook[order(Price,decreasing = TRUE)]
 				
                 Symbols[1] <-paste('Order_Book_',toupper(gsub('\\^','',Symbols[1])),sep='_')
