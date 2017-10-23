@@ -4,7 +4,7 @@ Title: Your Data Explorer to financial world
 Version: 0.3.8
 Date: 2017-10-20
 Author: Sergey Edunov[cre, aut], Vyacheslav Arbuzov[cre, aut], Aleksey Kutergin[ctb]
-Depends: quantmod,lubridate
+Depends: quantmod,lubridate,data.table
 Suggests:
 Maintainer: Vyacheslav Arbuzov <arbuzov1989@gmail.com>
 Description: Rusquant is data downloader from different data sources starting from Close price to order book, tradelog and orderlog. 
