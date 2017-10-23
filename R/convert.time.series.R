@@ -21,9 +21,6 @@
                         fr <- as.data.frame(fr)
                         return(fr)
                 }
-				else if ("data.table" %in% return.class) {
-                        return(fr)
-                }
                 else if ("matrix" %in% return.class) {
                         fr <- as.data.frame(fr)
                         return(fr)
