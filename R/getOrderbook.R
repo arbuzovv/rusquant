@@ -29,7 +29,7 @@
                                   "&currencyPair=", Symbols[[i]],
                                   "&depth=", depth, sep="")
                 tmp <- tempfile()
-				if(verbose) print(paste('Downloading file from',Polo.url))
+				if(verbose == TRUE) print(paste('Downloading file from',Polo.url))
                 download.file(Polo.url, destfile = tmp, quiet = TRUE) #get JSON object
 				date_time <- Sys.time()
                 rawdata <- readLines(tmp) #read raw data from file
@@ -60,7 +60,7 @@
 				orderbook$Seq <- seq_orderbook
 				names(orderbook)[1:3] <- c('Price','Volume','isAsk')
 				orderbook <- orderbook[order(Price,decreasing = TRUE)]
-				
+				print(nrow(orderbook))
                 fr <- convert.time.series(fr = orderbook, return.class=return.class)                
                 Symbols[1] <-paste('Order_Book_',toupper(gsub('\\^','',Symbols[1])),sep='_')
                 if(auto.assign){
