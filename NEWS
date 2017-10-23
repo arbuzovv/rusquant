@@ -1,5 +1,6 @@
 rusquant 0.3.8
 -----------
+* Add function getOrderbook for downloading order book snapshots from Poloniex
 * Add function getTradelog for downloading trades from Poloniex
 * Poloniex output of data now in standart format OHLCV
 * Change help of function getSymbols
