@@ -22,7 +22,6 @@
                         return(fr)
                 }
 				else if ("data.table" %in% return.class) {
-                        fr <- as.data.table(fr)
                         return(fr)
                 }
                 else if ("matrix" %in% return.class) {
