@@ -1,8 +1,8 @@
 Package: rusquant
 Type: Package
 Title: Your Data Explorer to financial world
-Version: 0.3.8
-Date: 2017-10-20
+Version: 0.3.9
+Date: 2017-11-16
 Author: Sergey Edunov[cre, aut], Vyacheslav Arbuzov[cre, aut], Aleksey Kutergin[ctb]
 Depends: quantmod,lubridate,data.table
 Suggests:

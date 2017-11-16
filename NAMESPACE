@@ -11,5 +11,7 @@ export(getAllDividends)
 export(convert.time.series)
 export(getTradelog)
 export(getOrderbook)
+export(getTicker)
+
 import(data.table)
 import(lubridate)
