@@ -1,6 +1,6 @@
 
 #function retrives data from Poloniex through its public API
-"getSymbols.Poloniex" <- function #S3 function (Poloniex is a class of first argument)
+"getSymbols.poloniex" <- function #S3 function (Poloniex is a class of first argument)
 (Symbols,env,return.class='xts',index.class='Date',
  from='2007-01-01',
  to=Sys.Date(),
@@ -8,7 +8,7 @@
  period='day',
  ...)
 {
-	importDefaults("getSymbols.Poloniex"); #rewrite default values if specified by setDefaults
+	importDefaults("getSymbols.poloniex"); #rewrite default values if specified by setDefaults
 	local_env <- environment()
 	for(var in names(list(...))) {
 		# import all named elements that are NON formals
