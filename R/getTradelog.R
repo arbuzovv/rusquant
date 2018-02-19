@@ -39,7 +39,7 @@
                                   "&end=", Polo.to, sep="")
                 tmp <- tempfile()
 				if(verbose) print(paste('Downloading file from',Polo.url))
-                download.file(Polo.url, destfile = tmp, quiet = TRUE) #get JSON object
+				download.file(Polo.url, destfile = tmp, quiet = TRUE,method = 'curl') #get JSON object
                 rawdata <- readLines(tmp) #read raw data from file
                 if(substr(rawdata, 3, 7) == 'error') {
                         stop(paste('Error!', substr(rawdata, 11, nchar(rawdata) - 2)))

@@ -50,6 +50,8 @@
 					rawdata_m <- rbind(rawdata_m,data.frame(names(rawdata)[i],raw_currency[1],raw_currency[2],raw_currency[3],raw_currency[4],raw_currency[5],raw_currency[6],raw_currency[7],raw_currency[8]))
 			}
 			rawdata_m[,2:ncol(rawdata_m)] <- apply(rawdata_m[,2:ncol(rawdata_m)],2,function(x) as.numeric(as.character(x)))
+			rawdata_m[,1] <- as.character(rawdata_m[,1])
+			names(rawdata_m)[1] <- 'Symbol'
 		}
 		
                 result <-paste('symbol_list_',toupper(gsub('\\^','',src)),sep='_')

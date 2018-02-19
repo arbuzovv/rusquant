@@ -61,7 +61,7 @@
                         "&start=", Polo.from,
                         "&end=", Polo.to, sep="")
 		tmp <- tempfile()
-		download.file(Polo.url, destfile = tmp, quiet = TRUE) #get JSON object
+		download.file(Polo.url, destfile = tmp, quiet = TRUE,method = 'curl') #get JSON object
 		rawdata <- readLines(tmp) #read raw data from file
 		if(substr(rawdata, 3, 7) == 'error') {
 		  
