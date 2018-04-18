@@ -25,9 +25,6 @@
   if (src == "bitfinex")
     downloadUrl <- "https://api.bitfinex.com/v1/symbols"
 
-  if (src == "bitflyer")
-    downloadUrl <- "https://api.bitflyer.com/v1/getmarkets/usa"
-
   if (src == "bitstamp")
     downloadUrl <- "https://www.bitstamp.net/api/v2/trading-pairs-info/"
 
@@ -63,7 +60,24 @@
 
 #download and parse data			
 rawdata_m <- jsonlite::fromJSON(downloadUrl, simplifyVector = TRUE)			
-			
+
+if (src == "liqui")	
+	rawdata_m <- t(sapply(rawdata_m$pairs,cbind))
+if (src == "gatecoin")		
+	rawdata_m <- rawdata_m$tickers
+if (src == "cex")
+	rawdata_m <- rawdata_m$data$pairs
+if (src == "bttrex")
+	rawdata_m <- rawdata_m$result	
+if (src == "kraken")	
+	rawdata_m <- t(sapply(rawdata_m$result,function(x) t(data.frame(x[c(1:9,14:15)]))))
+if (src == "poloniex")	
+	{
+	nms <- names(rawdata_m[[1]])
+	rawdata_m <- data.frame(t(sapply(rawdata_m,cbind)))
+	names(rawdata_m) <- nms
+	}
+	
 result <-paste('symbol_list_',toupper(gsub('\\^','',src)),sep='_')			
 if(auto.assign)                
 	{
