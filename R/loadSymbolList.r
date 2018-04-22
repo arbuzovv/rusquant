@@ -102,7 +102,7 @@ if (src == "poloniex")
 	rawdata_m <- data.table(rawdata_m)
 	names(rawdata_m) <- 'Symbol'
 	}
-if (src %in% "gdax","hitbtc","lykke")		
+if (src %in% c("gdax","hitbtc","lykke"))		
 	names(rawdata_m)[1]<- 'Symbol'
 
 
