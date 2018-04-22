@@ -2,7 +2,7 @@
 \alias{getOrderbook}
 \title{Load current snapshot of order book}
 \description{
-  Function to load order book. Available exchanges: Poloniex
+  Function to load order book.  Current src methods available are: poloniex,kraken,binance,bttrex,cex,gate,gatecoin,gdax,gemini,hitbtc,liqui,lykke,xbtce
 }
 \usage{
 getOrderbook(Symbols = NULL, src='poloniex', depth = 10)

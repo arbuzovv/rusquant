@@ -62,6 +62,7 @@ if (src == "kraken")
 	ask <- data.table(ask,1)
 	bid <- data.table(bid,0)
 	orderbook <- rbind(ask,bid)
+	orderbook <- orderbook[,-3]
 	}				  
 if (src == "binance")	
 	{
@@ -79,6 +80,7 @@ if (src == "bttrex")
 	ask <- data.table(ask,1)
 	bid <- data.table(bid,0)
 	orderbook <- rbind(ask,bid)
+	orderbook <- orderbook[,c(2,1,3)]
 	}
 if (src %in% c("gatecoin","gate","cex","gdax","poloniex","gemini"))
 	{		
@@ -88,6 +90,16 @@ if (src %in% c("gatecoin","gate","cex","gdax","poloniex","gemini"))
 	bid <- data.table(bid,0)
 	orderbook <- rbind(ask,bid)
 	}		
+if (src %in% c("gdax","gemini"))
+	{		
+	ask <- t(sapply(rawdata$asks,rbind))
+	bid <- t(sapply(rawdata$bids,rbind))
+	ask <- data.table(ask,1)
+	bid <- data.table(bid,0)
+	orderbook <- rbind(ask,bid)
+	orderbook <- orderbook[,-3]
+	}		
+	
 if (src == "hitbtc")
 	{		
 	ask <- t(sapply(rawdata$ask,rbind))
@@ -111,6 +123,7 @@ if (src == "lykke")
 	ask <- data.table(ask,1)
 	bid <- data.table(bid,0)
 	orderbook <- rbind(ask,bid)   
+	orderbook <- orderbook[,c(2,1,3)]
 	}
 if (src == "xbtce")	
 	{		
@@ -119,6 +132,7 @@ if (src == "xbtce")
 	ask <- data.table(ask,1)
 	bid <- data.table(bid,0)
 	orderbook <- rbind(ask,bid)  
+	orderbook <- orderbook[,c(2,1,3)]
 	}
 						  			 
 	names(orderbook)[1:3] <- c('Price','Volume','isAsk')			
