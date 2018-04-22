@@ -62,21 +62,50 @@
 rawdata_m <- jsonlite::fromJSON(downloadUrl, simplifyVector = TRUE)			
 
 if (src == "liqui")	
+	{
 	rawdata_m <- t(sapply(rawdata_m$pairs,cbind))
+	rawdata_m <- data.table(rownames(rawdata_m),rawdata_m)
+	names(rawdata_m)[1] <- 'Symbol'
+	}
 if (src == "gatecoin")		
+	{
 	rawdata_m <- rawdata_m$tickers
+	names(rawdata_m)[1] <- 'Symbol'
+	}
 if (src == "cex")
+	{
 	rawdata_m <- rawdata_m$data$pairs
+	rawdata_m$Symbol <- paste0(rawdata_m[,1], "/", rawdata_m[,2])
+	}
 if (src == "bttrex")
+	{
 	rawdata_m <- rawdata_m$result	
+	names(rawdata_m)[6] <- 'Symbol'
+	}
 if (src == "kraken")	
-	rawdata_m <- t(sapply(rawdata_m$result,function(x) t(data.frame(x[c(1:9,14:15)]))))
+	{
+	rawdata_m <- data.table(t(sapply(rawdata_m$result,function(x) t(data.frame(x[c(1:9,14:15)])))))
+	names(rawdata_m)[1] <- 'Symbol'
+	}
 if (src == "poloniex")	
 	{
-	nms <- names(rawdata_m[[1]])
-	rawdata_m <- data.frame(t(sapply(rawdata_m,cbind)))
-	names(rawdata_m) <- nms
+	colnms <- names(rawdata_m[[1]])
+	rownms <- names(rawdata_m)
+	rawdata_m <- (t(sapply(rawdata_m,cbind)))
+	rawdata_m <- data.table(rownms,rawdata_m)
+	names(rawdata_m) <- c('Symbol',colnms)
 	}
+ if (src == "binance")
+    names(rawdata_m) <- c('Symbol','Price')
+ if (src %in% c("gate","gemini"))	
+	{
+	rawdata_m <- data.table(rawdata_m)
+	names(rawdata_m) <- 'Symbol'
+	}
+if (src %in% "gdax","hitbtc","lykke")		
+	names(rawdata_m)[1]<- 'Symbol'
+
+
 	
 result <-paste('symbol_list_',toupper(gsub('\\^','',src)),sep='_')			
 if(auto.assign)                

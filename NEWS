@@ -1,3 +1,9 @@
+rusquant 0.3.9
+-----------
+* Add function loadSymbolList for downloading availible symbols
+* Add help for function loadSymbolList
+* Add additional exchanges to function getOrderbook
+
 rusquant 0.3.8
 -----------
 * Add function getOrderbook for downloading order book snapshots from Poloniex
