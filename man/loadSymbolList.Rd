@@ -9,7 +9,7 @@
 loadSymbolList(src = "poloniex", verbose=FALSE, auto.assign=FALSE)
 }
 \arguments{
-  \item{src}{character string specifying sourcing method (only kraken, poloniex).}
+  \item{src}{character string specifying sourcing method (kraken, poloniex, etc).}
  }
 \examples{
 loadSymbolList()

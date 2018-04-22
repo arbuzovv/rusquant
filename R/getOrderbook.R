@@ -3,6 +3,7 @@
 "getOrderbook" <- function #S3 function (Poloniex is a class of first argument)
 (Symbols,return.class='data.table',index.class='Date',
  depth=10,
+ src='poloniex',
  adjust=FALSE,
  verbose=FALSE,
  auto.assign=TRUE,
