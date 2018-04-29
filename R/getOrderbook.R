@@ -129,8 +129,8 @@ if (src == "xbtce")
 	{		
 	ask <- t(sapply(rawdata[[1]]$Asks,rbind))
 	bid <- t(sapply(rawdata[[1]]$Bids,rbind))
-	ask <- data.table(ask,1)
-	bid <- data.table(bid,0)
+	ask <- data.table(ask[,1:2],1)
+	bid <- data.table(bid[,1:2],0)
 	orderbook <- rbind(ask,bid)  
 	orderbook <- orderbook[,c(2,1,3)]
 	}
