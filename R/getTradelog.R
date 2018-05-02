@@ -4,9 +4,8 @@
 (Symbols,
  src='poloniex',
  return.class='xts',index.class='Date',
- from='2007-01-01',
- to=Sys.Date(),
  adjust=FALSE,
+ depth,
  verbose=FALSE,
  auto.assign=TRUE,
  ...)
@@ -136,8 +135,8 @@
                 assign(Symbols[1], trades,globalenv())
         }
         
-        if(auto.assign){
-                return(Symbols)
+        if(auto.assign==FALSE){
+                return(trades)
         }
         
         return(orderbook)
