@@ -124,12 +124,12 @@
         trades$Type <- tolower(trades$Type)
         trades$Volume <- as.numeric(trades$Volume)
         trades$Price <- as.numeric(trades$Price)
-     
-        # Symbols[1] <-paste0('TradeLog_',toupper(gsub('\\^','',Symbols[1])))
-        # if(auto.assign){
-        #         assign(Symbols[1], trades,globalenv())
-        #         return(Symbols)
-        # }
-        
-       # return(trades)
+
+        Symbols[1] <-paste0('TradeLog_',toupper(gsub('\\^','',Symbols[1])))
+        if(auto.assign){
+                assign(Symbols[1], trades,globalenv())
+                return(Symbols)
+        }
+
+        return(trades)
 }
