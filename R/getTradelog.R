@@ -131,7 +131,8 @@
         {
                 trades <- t(sapply(rawdata,rbind))
                 colnames(trades) <- c('Id','tradeID','DateTime','Type','Price','Volume','total')
-                trades <- trades[,c(1,3,6,5,4)]
+                trades <- data.frame(trades[,c(1,3,6,5,4)])
+                trades[,2] <- as.POSIXct(sapply(trades[,2],rbind), origin="1970-01-01", tz ="GMT")
         }
         
         trades <- data.table(trades)
@@ -139,6 +140,7 @@
         trades$Type <- tolower(trades$Type)
         trades$Volume <- as.numeric(trades$Volume)
         trades$Price <- as.numeric(trades$Price)
+        trades$Id <- as.character(trades$Id)
 
         Symbols[1] <-paste0('TradeLog_',toupper(gsub('\\^','',Symbols[1])))
         if(auto.assign){
