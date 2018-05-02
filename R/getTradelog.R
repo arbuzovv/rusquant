@@ -5,6 +5,8 @@
  adjust=FALSE,
  verbose=FALSE,
  auto.assign=TRUE,
+ return.class='data.table',
+ index.class='Date',
  ...)       
 {
         importDefaults("getTradelog"); #rewrite default values if specified by setDefaults
