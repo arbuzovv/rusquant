@@ -1,7 +1,9 @@
 
 #function retrives Tradelog data from Poloniex through its public API
 "getTradelog" <- function #S3 function (Poloniex is a class of first argument)
-(Symbols,return.class='xts',index.class='Date',
+(Symbols,
+ src='poloniex',
+ return.class='xts',index.class='Date',
  from='2007-01-01',
  to=Sys.Date(),
  adjust=FALSE,
@@ -21,61 +23,122 @@
         default.from <- from
         default.to <- to
         if(missing(verbose)) verbose <- TRUE
+        src <- tolower(src)
         
-        Polo.period <- 0
-        Polo.max_candles <- 1000
-        Polo.from <- as.numeric(as.POSIXct(from)) #convert to UNIX timestamp
-        Polo.to <- as.numeric(as.POSIXct(to)) #convert to UNIX timestamp
-        Polo.downloadUrl <- 'https://poloniex.com/public?command=returnTradeHistory'
+        ## choose exchange       
+        if (src == "poloniex")
+                downloadUrl <- paste0("https://poloniex.com/public?command=returnTradeHistory&currencyPair=",Symbols)
+        if(src == "kraken")
+                downloadUrl <- paste0("https://api.kraken.com/0/public/Trades?pair=", Symbols)
+        if (src == "binance")
+                downloadUrl <- url <- paste0("https://api.binance.com/api/v1/trades?symbol=",Symbols) 
+        if (src == "bttrex")
+                downloadUrl <- paste0("https://bittrex.com/api/v1.1/public/getmarkethistory?market=",Symbols)
+        if (src == "cex")
+                downloadUrl <- paste0("https://cex.io/api/trade_history/",Symbols)
+        if (src == "gate") #!!!!!!!!!!
+                downloadUrl <- paste0("http://data.gate.io/api2/1/tradeHistory/",Symbols, "")
+        if (src == "gatecoin")
+                downloadUrl <- paste0("https://api.gatecoin.com/Public/TransactionsHistory/", Symbols,"?Count=",depth)
+        if (src == "gdax")
+                downloadUrl <- paste0("https://api.gdax.com/products/",Symbols,"/trades")		
+        if(src == "gemini")
+                downloadUrl <- paste0("https://api.gemini.com/v1/trades/", Symbols)
+        if (src == "hitbtc")
+                downloadUrl <- paste0("https://api.hitbtc.com/api/2/public/trades/", Symbols)
+        if (src == "liqui")
+                downloadUrl <- paste0("https://api.liqui.io/api/3/trades/",Symbols,"?limit=", depth)
+        if (src == "lykke") 
+                downloadUrl <- paste0("https://public-api.lykke.com/api/Trades/", Symbols,'?skip=0&take=',depth)
 
+        rawdata <- jsonlite::fromJSON(downloadUrl, simplifyVector = FALSE)
+
+        if (src == "hitbtc")
+        {
+                trades <- t(sapply(rawdata,rbind))
+                colnames(trades) <- c('id', 'price', 'quantity', 'side', 'timestamp')
+        }
+        if (src == "gemini")
+        {
+                trades <- t(sapply(rawdata,rbind))
+                colnames(trades) <- c('timestamp','timestampms','tid', 'price', 'amount', 'exchange', 'type')
+                trades <- trades[,c(3,1,5,4,7)]
+        }
+        if (src == "gdax")
+        {
+                trades <- t(sapply(rawdata,rbind))
+                colnames(trades) <- c('time', 'trade_id', 'price', 'size', 'side')
+                trades <- trades[,c(2,1,4,3,5)]
+        }
+        if (src == "gate")
+        {
+                trades <- t(sapply(rawdata$data,rbind))
+                colnames(trades) <- c('tradeID','date', 'timestamp', 'type', 'rate', 'amount', 'total')
+        }
+        if (src == "cex")	
+        {
+                trades <- t(sapply(rawdata,rbind))
+                colnames(trades) <- c('type', 'date', 'amount', 'price', 'tid')
+                trades <- trades[,c(5,2,3,4,1)]
+        }
+        if (src == "bttrex")	
+        {
+                trades <- t(sapply(rawdata$result,rbind))
+                colnames(trades) <- c('Id','TimeStamp', 'Quantity', 'Price', 'Total', 'FillType', 'OrderType')
+                trades <- trades[,c(1:4,7)]
+        }
+        if (src == "gatecoin")	
+        {
+                trades <- data.frame(t(sapply(rawdata$transactions,cbind)))
+                colnames(trades) <- c('transactionId', 'transactionTime', 'price', 'quantity')
+                trades$Type<-''
+        }     
+        if (src == "liqui")	``
+        {
+                trades <- t(sapply(rawdata[[1]],rbind))
+                colnames(trades) <- c('type', 'price', 'amount', 'tid', 'timestamp')
+        }				  
+        if (src == "lykke")
+        {
+                trades <- (t(sapply(rawdata,rbind)))
+                colnames(trades) <- c('Id', 'assetPairId', 'DateTime', 'Volume', 'Price', 'Type')
+                trades <- trades[,c(1,3,4,5,6)]
+        }	
+        if (src == "binance")	
+        {
+                trades <- t(sapply(rawdata,rbind))
+                colnames(trades) <- c('id', 'price', 'qty', 'time', 'isBuyerMaker', 'isBestMatch')
+                trades <- trades[,c(1,4,3,2,5)]
+                trades[,5] <- ifelse(trades[,5]==TRUE,'buy','sell')
+        }
+        if (src == "kraken")	
+        {
+                trades <- t(sapply(rawdata$result[[1]],rbind))
+                colnames(trades) <- c('price', 'volume', 'time', 'buy/sell', 'market/limit', 'miscellaneous')
+                trades <- data.frame('',trades[,c(3,2,1,4)])
+                trades[,5] <- ifelse(trades[,5]=='b','buy','sell')
+        }
+        if (src == "poloniex")	
+        {
+                trades <- t(sapply(rawdata,rbind))
+                colnames(trades) <- c('Id','tradeID','DateTime','Type','Price','Volume','total')
+                trades <- trades[,c(1,3,6,5,4)]
+        }
         
-        #example API usage
-        # https://poloniex.com/public?command=returnTradeHistory&currencyPair=BTC_NXT&start=1410158341&end=1410499372
-        
-        for(i in 1:length(Symbols)) {
-                Polo.url <- paste(Polo.downloadUrl,
-                                  "&currencyPair=", Symbols[[i]],
-                                  "&start=", Polo.from,
-                                  "&end=", Polo.to, sep="")
-                tmp <- tempfile()
-				if(verbose) print(paste('Downloading file from',Polo.url))
-				download.file(Polo.url, destfile = tmp, quiet = TRUE,method = 'curl') #get JSON object
-                rawdata <- readLines(tmp) #read raw data from file
-                if(substr(rawdata, 3, 7) == 'error') {
-                        stop(paste('Error!', substr(rawdata, 11, nchar(rawdata) - 2)))
-                }
-                
-                #parsing JSON object
-                str_obs <- strsplit(rawdata, split = "},{", fixed = TRUE)
-                str_obs[[1]][1] <- substr(str_obs[[1]][1], 3, nchar(str_obs[[1]][1]))
-                temp <- str_obs[[1]][length(str_obs[[1]])]
-                substr(temp, 1, nchar(temp)-2) -> str_obs[[1]][length(str_obs[[1]])]
-                
-                ticker_header <- c('globalTradeID','tradeID','date','type','rate','amount','total')
-                str_obs <- data.frame(str_obs[[1]])
-                res <- apply(str_obs,1,function(x) gsub('"','',strsplit(x, ",")[[1]]))
-                res <- t(res)
-                for(i in 1:length(ticker_header))
-                        res[,i] <- gsub(paste(ticker_header[i],':',sep = ''),'',res[,i])
-
-                date_time <- fast_strptime(res[,3],format = "%Y-%m-%d %H:%M:%S")
-                res[,4] <- ifelse(res[,4]=='buy',1,0)
-                res <- res[,-3]
-                res <- apply(res[,1:6],2,as.numeric)
-                res <- xts(res[,c(1:2,4:6,3)],order.by = date_time)
-
-                names(res) <- c('globalTradeID','TradeID','Price','Volume','Value','BuySell')
-                fr <- convert.time.series(fr = res, return.class=return.class)
-                
-                Symbols[1] <-toupper(gsub('\\^','',Symbols[1]))
-                if(auto.assign){
-                        assign(Symbols[1], fr,globalenv())
-                }
+        trades <- data.table(trades)
+        names(trades) <- c('Id','DateTime','Volume','Price','Type')
+        trades$Type <- tolower(trades$Type)
+        trades$Volume <- as.numeric(trades$Volume)
+        trades$Price <- as.numeric(trades$Price)
+     
+        Symbols[1] <-paste0('TradeLog_',toupper(gsub('\\^','',Symbols[1])))
+        if(auto.assign){
+                assign(Symbols[1], trades,globalenv())
         }
         
         if(auto.assign){
                 return(Symbols)
         }
         
-        return(fr)
+        return(orderbook)
 }
