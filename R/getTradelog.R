@@ -17,9 +17,6 @@
         }
         
         options(warn = -1)
-        default.return.class <- return.class
-        default.from <- from
-        default.to <- to
         if(missing(verbose)) verbose <- TRUE
         src <- tolower(src)
         
