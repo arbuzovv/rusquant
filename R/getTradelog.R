@@ -5,7 +5,7 @@
  src='poloniex',
  return.class='xts',index.class='Date',
  adjust=FALSE,
- depth,
+ depth=500,
  verbose=FALSE,
  auto.assign=TRUE,
  ...)
@@ -133,11 +133,8 @@
         Symbols[1] <-paste0('TradeLog_',toupper(gsub('\\^','',Symbols[1])))
         if(auto.assign){
                 assign(Symbols[1], trades,globalenv())
+                return(Symbols)
         }
         
-        if(auto.assign==FALSE){
-                return(trades)
-        }
-        
-        return(orderbook)
+        return(trades)
 }
