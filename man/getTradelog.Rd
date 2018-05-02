@@ -12,4 +12,10 @@ getTradelog(Symbols = NULL,  from=Sys.Date(), to = Sys.Date())
   \item{from}{start date of analyzing period.}
   \item{to}{end date of analyzing period.}
  }
+\examples{
+exchange <- 'poloniex'
+list_s <- loadSymbolList(src = exchange)
+Symbol <- list_s$Symbol[41]
+getTradelog(Symbols = Symbol,src = exchange,depth = 500)
+}
 \keyword{getTradelog}
