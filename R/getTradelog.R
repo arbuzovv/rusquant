@@ -89,8 +89,9 @@
         }
         if (src == "gatecoin")	
         {
-                trades <- data.frame(t(sapply(rawdata$transactions,cbind)))
+                trades <- t(sapply(rawdata$transactions,cbind))
                 colnames(trades) <- c('transactionId', 'transactionTime', 'price', 'quantity')
+                trades <- data.frame(trades[,c(1,2,4,3)])
                 trades$Type<-''
                 trades[,2] <- as.POSIXct(as.numeric(sapply(trades[,2],rbind)),origin="1970-01-01", tz ="GMT")
         }     
