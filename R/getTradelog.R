@@ -1,14 +1,11 @@
 
 
 "getTradelog" <- function 
-(Symbols,
- src='poloniex',
- return.class='xts',index.class='Date',
+(Symbols,depth=500,src='poloniex',
  adjust=FALSE,
- depth=500,
  verbose=FALSE,
  auto.assign=TRUE,
- ...)
+ ...)       
 {
         importDefaults("getTradelog"); #rewrite default values if specified by setDefaults
         env <- environment()
@@ -92,7 +89,7 @@
                 colnames(trades) <- c('transactionId', 'transactionTime', 'price', 'quantity')
                 trades$Type<-''
         }     
-        if (src == "liqui")	``
+        if (src == "liqui")
         {
                 trades <- t(sapply(rawdata[[1]],rbind))
                 colnames(trades) <- c('type', 'price', 'amount', 'tid', 'timestamp')
