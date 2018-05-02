@@ -106,7 +106,7 @@
         {
                 trades <- (t(sapply(rawdata,rbind)))
                 colnames(trades) <- c('Id', 'assetPairId', 'DateTime', 'Volume', 'Price', 'Type')
-                trades <- trades[,c(1,3,4,5,6)]
+                trades <- data.frame(trades[,c(1,3,4,5,6)])
                 trades[,2] <- as.POSIXct(sapply(trades[,2],rbind),format= "%Y-%m-%dT%H:%M:%S", tz ="GMT")
         }	
         if (src == "binance")	
