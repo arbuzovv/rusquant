@@ -46,23 +46,27 @@
                 downloadUrl <- paste0("https://public-api.lykke.com/api/Trades/", Symbols,'?skip=0&take=',depth)
 
         rawdata <- jsonlite::fromJSON(downloadUrl, simplifyVector = FALSE)
-
+        
         if (src == "hitbtc")
         {
                 trades <- t(sapply(rawdata,rbind))
                 colnames(trades) <- c('id', 'price', 'quantity', 'side', 'timestamp')
+                trades <- data.frame(trades[,c(1,5,3,2,4)])
+                trades[,2] <- as.POSIXct(sapply(trades[,2],rbind),format= "%Y-%m-%dT%H:%M:%S",origin="1970-01-01", tz ="GMT")
         }
         if (src == "gemini")
         {
                 trades <- t(sapply(rawdata,rbind))
                 colnames(trades) <- c('timestamp','timestampms','tid', 'price', 'amount', 'exchange', 'type')
-                trades <- trades[,c(3,1,5,4,7)]
+                trades <- data.frame(trades[,c(3,1,5,4,7)])
+                trades[,2] <- as.POSIXct(as.numeric(sapply(trades[,2],rbind)),origin="1970-01-01", tz ="GMT")
         }
         if (src == "gdax")
         {
                 trades <- t(sapply(rawdata,rbind))
                 colnames(trades) <- c('time', 'trade_id', 'price', 'size', 'side')
-                trades <- trades[,c(2,1,4,3,5)]
+                trades <- data.frame(trades[,c(2,1,4,3,5)])
+                trades[,2] <- as.POSIXct(sapply(trades[,2],rbind),format= "%Y-%m-%dT%H:%M:%S",origin="1970-01-01", tz ="GMT")
         }
         if (src == "gate")
         {
@@ -73,37 +77,47 @@
         {
                 trades <- t(sapply(rawdata,rbind))
                 colnames(trades) <- c('type', 'date', 'amount', 'price', 'tid')
-                trades <- trades[,c(5,2,3,4,1)]
+                trades <- data.frame(trades[,c(5,2,3,4,1)])
+                trades[,2] <- as.POSIXct(as.numeric(sapply(trades[,2],rbind)),origin="1970-01-01", tz ="GMT")
         }
         if (src == "bttrex")	
         {
                 trades <- t(sapply(rawdata$result,rbind))
                 colnames(trades) <- c('Id','TimeStamp', 'Quantity', 'Price', 'Total', 'FillType', 'OrderType')
-                trades <- trades[,c(1:4,7)]
+                trades <- data.frame(trades[,c(1:4,7)])
+                trades[,2] <- as.POSIXct(sapply(trades[,2],rbind),format= "%Y-%m-%dT%H:%M:%S", tz ="GMT")
         }
         if (src == "gatecoin")	
         {
                 trades <- data.frame(t(sapply(rawdata$transactions,cbind)))
                 colnames(trades) <- c('transactionId', 'transactionTime', 'price', 'quantity')
                 trades$Type<-''
+                trades[,2] <- as.POSIXct(as.numeric(sapply(trades[,2],rbind)),origin="1970-01-01", tz ="GMT")
         }     
         if (src == "liqui")
         {
                 trades <- t(sapply(rawdata[[1]],rbind))
                 colnames(trades) <- c('type', 'price', 'amount', 'tid', 'timestamp')
+                trades <- data.frame(trades[,c(4,5,3,2,1)])
+                trades[,2] <- as.POSIXct(sapply(trades[,2],rbind),origin="1970-01-01", tz ="GMT")
+                trades[,5] <- ifelse(trades[,5]=='bid','buy','sell')
         }				  
         if (src == "lykke")
         {
                 trades <- (t(sapply(rawdata,rbind)))
                 colnames(trades) <- c('Id', 'assetPairId', 'DateTime', 'Volume', 'Price', 'Type')
                 trades <- trades[,c(1,3,4,5,6)]
+                trades[,2] <- as.POSIXct(sapply(trades[,2],rbind),format= "%Y-%m-%dT%H:%M:%S", tz ="GMT")
         }	
         if (src == "binance")	
         {
                 trades <- t(sapply(rawdata,rbind))
                 colnames(trades) <- c('id', 'price', 'qty', 'time', 'isBuyerMaker', 'isBestMatch')
-                trades <- trades[,c(1,4,3,2,5)]
+                trades <- data.frame(trades[,c(1,4,3,2,5)])
                 trades[,5] <- ifelse(trades[,5]==TRUE,'buy','sell')
+                trades[,2] <- as.POSIXct(sapply(trades[,2],rbind)/1000, origin="1970-01-01", tz ="GMT") # kraken
+                
+                
         }
         if (src == "kraken")	
         {
@@ -111,6 +125,7 @@
                 colnames(trades) <- c('price', 'volume', 'time', 'buy/sell', 'market/limit', 'miscellaneous')
                 trades <- data.frame('',trades[,c(3,2,1,4)])
                 trades[,5] <- ifelse(trades[,5]=='b','buy','sell')
+                trades[,2] <- as.POSIXct(sapply(trades[,2],rbind), origin="1970-01-01", tz ="GMT")
         }
         if (src == "poloniex")	
         {
