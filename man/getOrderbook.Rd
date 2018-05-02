@@ -12,4 +12,10 @@ getOrderbook(Symbols = NULL, src='poloniex', depth = 10)
   \item{src}{character string specifying sourcing method (kraken, poloniex, etc).}
   \item{depth}{depth of the order book.}
  }
+\examples{
+exchange <- 'poloniex'
+list_s <- loadSymbolList(src = exchange)
+Symbol <- list_s$Symbol[41]
+getOrderbook(Symbols = Symbol,src = exchange,depth = 500)
+}
 \keyword{getOrderbook}
