@@ -1,6 +1,6 @@
 
-#function retrives Tradelog data from Poloniex through its public API
-"getTradelog" <- function #S3 function (Poloniex is a class of first argument)
+
+"getTradelog" <- function 
 (Symbols,
  src='poloniex',
  return.class='xts',index.class='Date',
@@ -130,11 +130,11 @@
         trades$Volume <- as.numeric(trades$Volume)
         trades$Price <- as.numeric(trades$Price)
      
-        Symbols[1] <-paste0('TradeLog_',toupper(gsub('\\^','',Symbols[1])))
-        if(auto.assign){
-                assign(Symbols[1], trades,globalenv())
-                return(Symbols)
-        }
+        # Symbols[1] <-paste0('TradeLog_',toupper(gsub('\\^','',Symbols[1])))
+        # if(auto.assign){
+        #         assign(Symbols[1], trades,globalenv())
+        #         return(Symbols)
+        # }
         
-        return(trades)
+       # return(trades)
 }
