@@ -8,12 +8,9 @@ Depends: quantmod,lubridate,data.table,jsonlite,httr
 Suggests:
 Maintainer: Vyacheslav Arbuzov <arbuzov1989@gmail.com>
 Description: Rusquant is package for interaction with trading API of diferent exchanges and trading terminals.Also this is data downloader from different data sources starting from Close price to order book, tradelog and orderlog. 
-Current available terminal: 
-IB, Metatrader, Quik
-Current available cryptoexhanges: 
-poloniex,kraken,binance,bttrex,cex,gate,gatecoin,gdax,gemini,hitbtc,liqui,lykke,xbtce
-Current available data sources: 
-finam.ru, mfd.ru, hs.alorbroker.ru, coinmarketcap.com
+Current available terminal-IB, Metatrader, Quik.
+Current available cryptoexhanges - poloniex,kraken,binance,bttrex,cex,gate,gatecoin,gdax,gemini,hitbtc,liqui,lykke,xbtce.
+Current available data sources - finam.ru, mfd.ru, hs.alorbroker.ru, coinmarketcap.coms
 LazyLoad: yes
 License: GPL-3
 URL: http://www.rusquant.ru
