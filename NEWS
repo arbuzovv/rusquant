@@ -1,8 +1,14 @@
+rusquant 0.4.0
+-----------
+* Add function Connect for connection to exchanges
+
+
 rusquant 0.3.9
 -----------
 * Add function loadSymbolList for downloading availible symbols
 * Add help for function loadSymbolList
 * Add additional exchanges to function getOrderbook
+* Add additional exchanges to function getTradelog
 
 rusquant 0.3.8
 -----------
