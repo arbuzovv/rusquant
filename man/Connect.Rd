@@ -10,4 +10,4 @@ Connect(host='localhost',port='',key='',sign='')
 \arguments{
   \item{host}{localhost for terminal connections and name of exchange for web exchange connections}
  }
-\keyword{getOrderbook}
+\keyword{Connect}
