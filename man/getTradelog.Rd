@@ -2,7 +2,7 @@
 \alias{getTradelog}
 \title{Load trade data}
 \description{
-  Function to load and manage trade data.
+  Function to load and manage trade data. Current src methods available are: poloniex,kraken,binance,bttrex,cex,gate,gatecoin,gdax,gemini,hitbtc,liqui,lykke.
 }
 \usage{
 getTradelog(Symbols = NULL,  from=Sys.Date(), to = Sys.Date())
