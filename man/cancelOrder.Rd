@@ -1,6 +1,6 @@
 \name{cancelOrder}
 \alias{cancelOrder}
-\title{Cancel order}
+\title{Close order}
 \description{
   This function responsible for cancel order
 }
@@ -9,6 +9,6 @@ cancelOrder(Connection, OrderID)
 }
 \arguments{
   \item{Connection}{localhost for terminal connections and name of exchange for web exchange connections}
-  \item{OrderID}{localhost for terminal connections and name of exchange for web exchange connections}
+  \item{OrderID}{order id}
  }
 \keyword{cancelOrder}

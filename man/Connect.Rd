@@ -8,6 +8,6 @@
 Connect(host='localhost',port='',key='',sign='')
 }
 \arguments{
-  \item{host}{localhost for terminal connections and name of exchange for web exchange connections}
+  \item{host}{localhost for terminal connections or name of exchange for web exchange connections}
  }
 \keyword{Connect}
