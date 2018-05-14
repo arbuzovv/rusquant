@@ -2,6 +2,7 @@ rusquant 0.4.0
 -----------
 * Add function Connect for connection to exchanges
 * Add function checkConnection
+* Add function getBalance
 * Add function getOrders for downloading account orders
 * Add function Order for for creation object Order
 * Add function openOrder
