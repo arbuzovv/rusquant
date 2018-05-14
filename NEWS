@@ -1,7 +1,11 @@
 rusquant 0.4.0
 -----------
 * Add function Connect for connection to exchanges
-
+* Add function checkConnection
+* Add function getOrders for downloading account orders
+* Add function Order for for creation object Order
+* Add function openOrder
+* Add function cancelOrder
 
 rusquant 0.3.9
 -----------
