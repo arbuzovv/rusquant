@@ -6,7 +6,7 @@ openOrder <- function(Connection, Order)
                                        OrderAction = Order$Action,
                                        Volume = Order$Quantity,
                                        Price = Order$Price),
-                           httr::add_headers(`api-key` = slot(Connection,'Key')),
+                           httr::add_headers(`api-key` = conn$key),
                            encode = "json")
         return(resp)
 }
