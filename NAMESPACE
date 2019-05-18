@@ -28,4 +28,4 @@ import(lubridate)
 import(jsonlite)
 import(httr)
 import(rvest)
-
+import(RCurl)
