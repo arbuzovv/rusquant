@@ -1,5 +1,7 @@
 openOrder <- function(Connection, Order) 
 {
+  if(exists('Order'))
+  {
         url <- "https://hft-api.lykke.com/api/Orders/limit"
         resp <- httr::POST(url,
                            body = list(AssetPairId = Order$Symbol,
@@ -9,4 +11,5 @@ openOrder <- function(Connection, Order)
                            httr::add_headers(`api-key` = conn$key),
                            encode = "json")
         return(resp)
+  }
 }
