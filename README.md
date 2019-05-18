@@ -1,5 +1,8 @@
 # rusquant
-Official version of rusquant package for R.
+
+## Intro
+
+
 
 Rusquant is a package for interaction with alternative data, trading API of different exchanges and trading terminals.
 Package provides access to market data for storage, analysis, algorithmic trading, strategy backtesting.
