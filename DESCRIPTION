@@ -1,10 +1,10 @@
 Package: rusquant
 Type: Package
-Title: Trading with R: terminals, cryptoexchanges, financial datasources
+Title: Trading with R: financial datasources,terminals, cryptoexchanges
 Version: 0.4.0
 Date: 2018-05-09
 Author: Sergey Edunov[cre, aut], Vyacheslav Arbuzov[cre, aut], Aleksey Kutergin[ctb]
-Depends: quantmod,lubridate,data.table,jsonlite,httr
+Depends: quantmod,lubridate,data.table,jsonlite,httr,rvest
 Suggests:
 Maintainer: Vyacheslav Arbuzov <arbuzov1989@gmail.com>
 Description: Rusquant is package for interaction with trading API of diferent exchanges and trading terminals.
