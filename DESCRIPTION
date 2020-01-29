@@ -1,13 +1,13 @@
 Package: rusquant
 Type: Package
-Title: Trading with R: financial datasources,terminals, cryptoexchanges
-Version: 0.4.0
-Date: 2018-05-09
+Title: Quant free datasources
+Version: 0.4.1
+Date: 2020-01-29
 Author: Sergey Edunov[cre, aut], Vyacheslav Arbuzov[cre, aut], Aleksey Kutergin[ctb]
 Depends: quantmod,lubridate,data.table,jsonlite,httr,rvest
 Suggests:
 Maintainer: Vyacheslav Arbuzov <arbuzov1989@gmail.com>
-Description: Rusquant is package for interaction with trading API of diferent exchanges and trading terminals.
+Description: Rusquant is package for interaction with trading API of diferent exchanges and trading terminals. It allows to download financial datasources
 LazyLoad: yes
 License: GPL-3
 URL: http://www.rusquant.ru

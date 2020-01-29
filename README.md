@@ -19,6 +19,7 @@ Current available trading terminals - IB, Metatrader, Quik.
 
 ```R
 # install.packages("devtools") # if not installed
+# options(download.file.method = "libcurl") # if problems with "Error in utils::download.file(url, path...."
 
 library(devtools)
 install_github("arbuzovv/rusquant")
