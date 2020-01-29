@@ -1,3 +1,12 @@
+rusquant 0.4.1
+-----------
+* loadSymbolList function added "Finam" instruments
+* Add "market"" parameter to getSymbols function
+* More flexible version of downloading from "Finam"
+* getDividends changed type of downloading for long history
+* getInvesting from investing.com
+
+
 rusquant 0.4.0
 -----------
 * Add function Connect for connection to exchanges
