@@ -450,17 +450,17 @@ for(i in 1:length(Symbols)) {
       if (verbose) cat(stock.URL);
       tmp <- tempfile()
       if (p==1){
-        lts <-  http.get(finam.HOST, paste(stock.URL, '&datf=6', sep=''),  referer='http://www.finam.ru/analysis/export/default.asp', verbose=verbose)
-        write(lts, file=tmp)
+        stock.URL <- paste('http://', finam.HOST, stock.URL, '&datf=6' , sep='')
       }else {
         stock.URL <- paste('http://', finam.HOST, stock.URL, '&datf=1' , sep='')
-        download.file(stock.URL, destfile=tmp, quiet=!verbose)
       }
+      download.file(stock.URL, destfile=tmp, quiet=!verbose)
       fr <- read.csv(tmp, as.is=TRUE, colClasses="character")
       unlink(tmp)
       
       if(verbose) cat("done.\n")
       if (p==1){
+        if(verbose) print(head(fr))
         fr <- xts(apply(as.matrix(fr[,(5:6)]),2, as.numeric), as.POSIXct(strptime(paste(fr[,3],fr[,4]), "%Y%m%d %H%M%S")),
                   src='finam',updated=Sys.time())
         colnames(fr) <- paste(toupper(gsub('\\^','',Symbols.name)),
@@ -740,51 +740,3 @@ function(data, hour){
 }
 
 
-http.get <- function(host, path, port=80, referer="", verbose=FALSE) {
-
-  if(missing(path))
-    path <- "/"
-  if(missing(host))
-    stop("No host URL provided")
-
-  header <- NULL
-  header <- c(header,paste("GET ", path, " HTTP/1.0\r\n", sep=""))
-  header <- c(header,"User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0.2) Gecko/20100101 Firefox/6.0.2\r\n")
-  header <- c(header,"Accept: */*\r\n")
-  header <- c(header,"Accept-Encoding: deflate\r\n")
-  header <- c(header,paste("Referer: ", referer, "\r\n", sep=""))
-
-  request <- paste(header, sep="", collapse="")
-
-  if (verbose) {
-    cat("Sending HTTP GET request to ", host, ":", port, "\n")
-    cat(request, "\n")
-  }
-
-  con <- socketConnection(host=host, port=port, open="w+", blocking=TRUE, encoding="UTF-8")
-
-  on.exit(close(con))
-
-  writeLines(request, con)
-
-  response <- list()
-  response$status <- readLines(con, n=1)
-  if (verbose) {
-    write(response$status, stderr())
-    flush(stderr())
-  }
-  response$headers <- character(0)
-  repeat{
-    ss <- readLines(con, n=1)
-    if (verbose) {
-      write(ss, stderr())
-      flush(stderr())
-    }
-    if (ss == "") break
-    key.value <- strsplit(ss, ":\\s*")
-    response$headers[key.value[[1]][1]] <- key.value[[1]][2]
-  }
-  response$body = readLines(con)
-
-  return(response$body)
-}
