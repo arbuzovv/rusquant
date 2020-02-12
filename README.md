@@ -56,3 +56,15 @@ getSymbols('LKOH',src='Finam',period='day') # day bars - default parameter
 getSymbols('LKOH',src='Finam',period='5min') # 5 min bar 
 getSymbols('LKOH',src='Finam',period='15min') # 15 min bar 
 ```
+
+## get data from Investing.com
+```R
+library(rusquant)
+loadSymbolList(src='investing',country='UK') # download all available symbols in Finam.ru 
+getDividends(country = 'India')
+getIPO()
+getEarnings()
+```
+
+
+
