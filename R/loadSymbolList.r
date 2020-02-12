@@ -164,7 +164,6 @@
      names(rawdata_m)[1]<- 'Symbol'
    
    
-   
    result <-paste('symbol_list_',toupper(gsub('\\^','',src)),sep='_')			
    if(auto.assign)                
    {
