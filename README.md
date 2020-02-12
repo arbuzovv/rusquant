@@ -25,12 +25,15 @@ library(devtools)
 install_github("arbuzovv/rusquant")
 ```
 
-## get data from [Finam].ru
+## get data from Finam.ru
 
 ```R
 library(rusquant)
-loadSymbolList('Finam') # download all available symbols in Finam 
-getSymbols('LKOH',src='Finam')
+loadSymbolList('Finam') # download all available symbols in Finam.ru 
+getSymbols('LKOH',src='Finam') # default = main market
+getSymbols('LKOH',src = 'Finam',market=1) # main market
+getSymbols('LKOH',src = 'Finam',market=8) # ADR of LKOH, from market id from loadSymbolList
+
 ```
 
 ## rus
