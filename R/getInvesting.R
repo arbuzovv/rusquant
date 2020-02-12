@@ -68,6 +68,8 @@ library(XML)
       Records <- readHTMLTable(cr)$curr_table
       if(ncol(Records)>2)
       {
+      current_locale <- Sys.getlocale("LC_TIME")
+      Sys.setlocale("LC_TIME", "C") 
       names(Records)[1:5] <- c('Date','Close','Open','High','Low')
       Records <- Records[,c(1,3,4,5,2,6)]
       Records$Date <- as.Date(as.character(Records$Date),'%b %d %Y')
@@ -76,6 +78,7 @@ library(XML)
       Records$Low <- as.numeric(as.character(Records$Low))
       Records$Close <- as.numeric(as.character(Records$Close))
       Records <- Records[order(Records$Date),]
+      Sys.setlocale("LC_TIME", current_locale) 
       }
     }
     #print(Records)
@@ -86,7 +89,6 @@ library(XML)
   return(Records)
 }
 
-#x <- getDividends(country = 'China')
 #price <- getInvesting(from = '2019-01-01',to='2019-10-10',Symbol = '002859')
 
 
