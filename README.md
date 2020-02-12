@@ -25,6 +25,23 @@ library(devtools)
 install_github("arbuzovv/rusquant")
 ```
 
+## rus
+
+Проект rusquant – это  R пакет позволяющий взаимодействовать с общедоступными источниками финансовой информации, API различных бирж и торговых терминалов.
+
+Пакет является свободным программным обеспечением и распространяется абсолютно бесплатно.
+Официальная страница проекта на R-forge: http://r-forge.r-project.org/projects/rusquant/
+Для знакомства c использованием пакета можно воспользоваться документацией: http://rusquant.ru/docs/
+
+Практические примеры применения можно найти:
+
+В блоге официального сайта: http://rusquant.ru/blog/
+На персональной странице Сергея Едунова:http://www.algorithmist.ru/p/rusquant.html
+В блоге сайта infoption.ru:  http://infoption.ru/search/rusquant
+
+Наиболее подробная информация находится на сайте http://rusquant.ru
+
+
 ## get data from Finam.ru
 
 ```R
@@ -39,21 +56,3 @@ getSymbols('LKOH',src='Finam',period='day') # day bars - default parameter
 getSymbols('LKOH',src='Finam',period='5min') # 5 min bar 
 getSymbols('LKOH',src='Finam',period='15min') # 15 min bar 
 ```
-
-## rus
-
-Проект Rusquant – это  R пакет позволяющий взаимодействовать с API различных бирж и торговых терминалов.
-
-Пакет является свободным программным обеспечением и распространяется абсолютно бесплатно.
-Официальная страница проекта на R-forge: http://r-forge.r-project.org/projects/rusquant/
-Для знакомства c использованием пакета можно воспользоваться документацией: http://rusquant.ru/docs/
-
-Практические примеры применения можно найти:
-
-В блоге официального сайта: http://rusquant.ru/blog/
-На персональной странице Сергея Едунова:http://www.algorithmist.ru/p/rusquant.html
-В Пермской группе пользователей R: http://r-group.mifit.ru/
-В блоге сайта infoption.ru:  http://infoption.ru/search/rusquant
-В блоге r-train: http://r-train.ru/category/blog/
-
-Наиболее подробная информация находится на сайте http://rusquant.ru
