@@ -34,6 +34,10 @@ getSymbols('LKOH',src='Finam') # default = main market
 getSymbols('LKOH',src = 'Finam',market=1) # main market
 getSymbols('LKOH',src = 'Finam',market=8) # ADR of LKOH, from market id from loadSymbolList
 
+#type period
+getSymbols('LKOH',src='Finam',period='day') # day bars - default parameter
+getSymbols('LKOH',src='Finam',period='5min') # 5 min bar 
+getSymbols('LKOH',src='Finam',period='15min') # 15 min bar 
 ```
 
 ## rus
