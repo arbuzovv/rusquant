@@ -4,6 +4,7 @@
  (src='poloniex',
   verbose=FALSE,
   auto.assign=FALSE,
+  country='',
   ...)
  {
    importDefaults("loadSymbolList"); #rewrite default values if specified by setDefaults
@@ -58,10 +59,16 @@
    
    if(src == 'finam')
      downloadUrl <- 'https://finam.ru/cache/N72Hgd54/icharts/icharts.js'
-   
-   
-   #download data		
-   if (src != "finam")	
+
+   if(src == 'investing')
+   {
+     country_dict <- t(matrix(c("5","USA","29","Argentina","25","Australia","54","Austria","145","Bahrain","47","Bangladesh","34","Belgium","174","Bosnia","163","Botswana","32","Brazil","70","Bulgaria","6","Canada","27","Chile","37","China","122","Colombia","15","Costa_Rica","78","Cote_dIvoire","113","Croatia","107","Cyprus","55","Czech_Republic","24","Denmark","59","Egypt","72","Europe","71","Finland","22","France","17","Germany","51","Greece","39","Hong_Kong","93","Hungary","106","Iceland","14","India","48","Indonesia","66","Iraq","33","Ireland","23","Israel","10","Italy","119","Jamaica","35","Japan","92","Jordan","102","Kazakhstan","57","Kenya","94","Kuwait","68","Lebanon","103","Luxembourg","111","Malawi","42","Malaysia","109","Malta","188","Mauritius","7","Mexico","139","Mongolia","247","Montenegro","105","Morocco","172","Namibia","21","Netherlands","43","New_Zealand","20","Nigeria","60","Norway","87","Oman","44","Pakistan","193","Palestine","125","Peru","45","Philippines","53","Poland","38","Portugal","170","Qatar","100","Romania","56","Russian_Federation","80","Rwanda","52","Saudi_Arabia","238","Serbia","36","Singapore","90","Slovakia","112","Slovenia","110","South_Africa","11","South_Korea","26","Spain","162","Sri_Lanka","9","Sweden","12","Switzerland","46","Taiwan","85","Tanzania","41","Thailand","202","Tunisia","63","Turkey","123","Uganda","61","Ukraine","143","Dubai","4","UK","138","Venezuela","178","Vietnam","84","Zambia","75","Zimbabwe"),2,92))
+     id_country <- country_dict[country_dict[,2] %in% country,1]
+     downloadUrl <- paste0('https://www.investing.com/stock-screener/Service/downloadData?download=1&country%5B%5D=',id_country,'&sector=&industry=&equityType=&pn=')
+   }
+   ### download data ####
+
+   if (!src %in% c("finam","investing"))
      rawdata_m <- jsonlite::fromJSON(downloadUrl, simplifyVector = TRUE)		
    if (src == "finam")	
    {
@@ -69,6 +76,22 @@
      download.file(downloadUrl, destfile = tmp,method = "libcurl")
    }
    
+   if (src == "investing")	
+   {
+     num_row <- 50
+     i <- 1 
+     while(num_row==50)
+     { 
+       finalUrl <- paste0(downloadUrl,i,'&order%5Bcol%5D=eq_market_cap&order%5Bdir%5D=d&tab=overview')
+       rawdata <- read.csv(finalUrl)
+       num_row <- nrow(rawdata)
+       if(i == 1)
+         rawdata_m <- rawdata
+       if(i != 1)
+         rawdata_m <- rbind(rawdata_m,rawdata)
+       i=i+1
+      }
+   }
    
    # clean data
    if (src == "finam")	
