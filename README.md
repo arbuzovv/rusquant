@@ -25,7 +25,13 @@ library(devtools)
 install_github("arbuzovv/rusquant")
 ```
 
+## get data from [Finam].ru
 
+```R
+library(rusquant)
+loadSymbolList('Finam') # download all available symbols in Finam 
+getSymbols('LKOH',src='Finam')
+```
 
 ## rus
 
