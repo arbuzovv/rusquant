@@ -1,3 +1,11 @@
+rusquant 0.4.2
+-----------
+* loadSymbolList renamed to getSymbolList
+* all datasources now from big letter (Mfd,Alor,Investing,Finam,Poloniex)
+* getSymbolList function added "Investing" instruments
+* fix getOptionChain for download option desk
+* delete old datasources without access (rogovindex, dividends from troika)
+
 rusquant 0.4.1
 -----------
 * loadSymbolList function added "Finam" instruments

@@ -1,6 +1,228 @@
+"getSymbols.Finam" <-
+  function(Symbols,env,return.class='xts',index.class='Date',
+           from='2007-01-01',
+           to=Sys.Date(),
+           adjust=FALSE,
+           period='day',
+           market=NULL,
+           ...)
+  {
+    importDefaults("getSymbols.Finam")
+    this.env <- environment()
+    for(var in names(list(...))) {
+      # import all named elements that are NON formals
+      assign(var, list(...)[[var]], this.env)
+    }
+    
+    default.return.class <- return.class
+    default.from <- from
+    default.to <- to
+    
+    if(missing(verbose)) verbose <- FALSE
+    if(missing(auto.assign)) auto.assign <- FALSE
+    
+    p <- 0
+    
+    if ("tick" == period) p <- 1
+    if ("1min" == period) p <- 2
+    if ("5min" == period) p <- 3
+    if ("10min" == period) p <- 4
+    if ("15min" == period) p <- 5
+    if ("30min" == period) p <- 6
+    if ("hour" == period) p <- 7
+    if ("day" == period) p <- 8
+    if ("week" == period) p <- 9
+    if ("month" == period) p <- 10
+    
+    if (p==0) {
+      message(paste("Unkown period ", period))
+    }	 
+    
+    if (!exists("finam.stock.list")){
+      finam.stock.list <- loadSymbolList(src='Finam')
+      assign('finam.stock.list', finam.stock.list, env)
+    }
+    fr <- NaN
+    for(i in 1:length(Symbols)) {
+      
+      return.class <- getSymbolLookup()[[Symbols[[i]]]]$return.class
+      return.class <- ifelse(is.null(return.class),default.return.class,
+                             return.class)
+      from <- getSymbolLookup()[[Symbols[[i]]]]$from
+      from <- if(is.null(from)) default.from else from
+      to <- getSymbolLookup()[[Symbols[[i]]]]$to
+      to <- if(is.null(to)) default.to else to
+      
+      from.y <- as.numeric(strsplit(as.character(as.Date(from,origin='1970-01-01')),'-',)[[1]][1])
+      from.m <- as.numeric(strsplit(as.character(as.Date(from,origin='1970-01-01')),'-',)[[1]][2])-1
+      from.d <- as.numeric(strsplit(as.character(as.Date(from,origin='1970-01-01')),'-',)[[1]][3])
+      to.y <- as.numeric(strsplit(as.character(as.Date(to,origin='1970-01-01')),'-',)[[1]][1])
+      to.m <- as.numeric(strsplit(as.character(as.Date(to,origin='1970-01-01')),'-',)[[1]][2])-1
+      to.d <- as.numeric(strsplit(as.character(as.Date(to,origin='1970-01-01')),'-',)[[1]][3])
+      
+      Symbols.name <- getSymbolLookup()[[Symbols[[i]]]]$name
+      Symbols.name <- ifelse(is.null(Symbols.name),Symbols[[i]],Symbols.name)
+      if(verbose) cat("downloading ",Symbols.name,".....\n\n")
+      
+      
+      if(!is.null(market))
+      {
+        finam.stock <- finam.stock.list[as.character(finam.stock.list$Symbol) == Symbols.name,]
+        Symbols.id <- finam.stock[finam.stock$Market == market,]$Id
+      }
+      if(is.null(market))
+      {
+        finam.stock <- finam.stock.list[as.character(finam.stock.list$Symbol) == Symbols.name,]
+        Symbols.id <- finam.stock[which.min(finam.stock$Market),]$Id
+        market <- finam.stock[which.min(finam.stock$Market),]$Market
+      }
+      
+      if (length(Symbols.id)==0){
+        if (verbose)
+          cat("Don't know about",Symbols[[i]],"\n\n")
+        next
+      }
+      
+      finam.HOST <- 'export.finam.ru'
+      finam.URL <- "/table.csv?d=d&f=table&e=.csv&dtf=1&tmf=1&MSOR=0&sep=1&sep2=1&at=1&"
+      
+      stock.URL <- paste(finam.URL,
+                         "p=", p,
+                         "&market=",1,
+                         "&em=",Symbols.id,
+                         "&df=",from.d,
+                         "&mf=",from.m,
+                         "&yf=",from.y,
+                         "&dt=",to.d,
+                         "&mt=",to.m,
+                         "&yt=",to.y,
+                         "&cn=",Symbols.name,
+                         sep='')
+      if (verbose) cat(stock.URL);
+      tmp <- tempfile()
+      if (p==1){
+        stock.URL <- paste('http://', finam.HOST, stock.URL, '&datf=6' , sep='')
+      }else {
+        stock.URL <- paste('http://', finam.HOST, stock.URL, '&datf=1' , sep='')
+      }
+      download.file(stock.URL, destfile=tmp, quiet=!verbose)
+      fr <- read.csv(tmp, as.is=TRUE, colClasses="character")
+      unlink(tmp)
+      
+      if(verbose) cat("done.\n")
+      if (p==1){
+        if(verbose) print(head(fr))
+        fr <- xts(apply(as.matrix(fr[,(5:6)]),2, as.numeric), as.POSIXct(strptime(paste(fr[,3],fr[,4]), "%Y%m%d %H%M%S")),
+                  src='finam',updated=Sys.time())
+        colnames(fr) <- paste(toupper(gsub('\\^','',Symbols.name)),
+                              c('Close','Volume'),
+                              sep='.')
+      }else if (p>7) {
+        fr <- xts(apply(as.matrix(fr[,(5:9)]),2, as.numeric), as.Date(strptime(fr[,3], "%Y%m%d")),
+                  src='finam',updated=Sys.time())
+        colnames(fr) <- paste(toupper(gsub('\\^','',Symbols.name)),
+                              c('Open','High','Low','Close','Volume'),
+                              sep='.')
+      }else {
+        fr <- xts(apply(as.matrix(fr[,(5:9)]),2,as.numeric), as.POSIXct(strptime(paste(fr[,3],fr[,4]), "%Y%m%d %H%M%S")),
+                  src='finam',updated=Sys.time())
+        colnames(fr) <- paste(toupper(gsub('\\^','',Symbols.name)),
+                              c('Open','High','Low','Close','Volume'),
+                              sep='.')
+      }
+      
+      fr <- convert.time.series(fr=fr,return.class=return.class)
+      if(is.xts(fr) && p>7)
+        indexClass(fr) <- index.class
+      
+      Symbols[[i]] <-toupper(gsub('\\^','',Symbols[[i]]))
+      if(auto.assign)
+        assign(Symbols[[i]],fr,env)
+      if(i >= 5 && length(Symbols) > 5) {
+        message("pausing 1 second between requests for more than 5 symbols")
+        Sys.sleep(1)
+      }
+    }
+    if(auto.assign)
+      return(Symbols)
+    
+    return(fr)
+  }
 
-#function retrives data from Poloniex through its public API
-"getSymbols.poloniex" <- function #S3 function (Poloniex is a class of first argument)
+"getSymbols.Investing" <-
+  function(Symbols,env,return.class='xts',index.class='Date',
+           from='2007-01-01',
+           to=Sys.Date(),
+           adjust=FALSE,
+           period='day',
+           ...)
+  {
+    importDefaults("getSymbols.Forts")
+    this.env <- environment()
+    for(var in names(list(...))) {
+      # import all named elements that are NON formals
+      assign(var, list(...)[[var]], this.env)
+    }
+    
+    default.return.class <- return.class
+    default.from <- from
+    default.to <- to
+    
+    if(missing(verbose)) verbose <- FALSE
+    if(missing(auto.assign)) auto.assign <- FALSE
+    
+    url = 'https://www.investing.com/instruments/HistoricalDataAjax'
+    start_date = from
+    end_date = to
+    # information for request
+    for(Symbol in Symbols) {
+      
+      headers = add_headers('Host' = 'www.investing.com','Origin' = 'https://www.investing.com','Referer' = 'https://www.investing.com/dividends-calendar/','X-Requested-With' = 'XMLHttpRequest','Content-Type' = 'application/x-www-form-urlencoded','Connection' = 'keep-alive','Accept-Language' = 'en-US,en;q=0.9,fr;q=0.8,ja;q=0.7,es;q=0.6','Accept-Encoding' = 'Encoding:gzip, deflate, br','Accept' = '*/*','User-Agent'= 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.108 Safari/537.36')
+      data <- paste0(data = 'curr_id=',getInvesting_id(Symbol),'&header=',Symbol,'+Historical+Data&st_date=',format(as.Date(start_date),'%m/%d/%Y'),'&end_date=',format(as.Date(end_date),'%m/%d/%Y'),'&interval_sec=Daily&sort_col=date&sort_ord=DESC&action=historical_data')
+      # request
+      r <- POST(url,headers,body = data,encode = "raw")
+      if(status_code(r) == 200)
+      {
+        cr <- content(r,as = 'text')
+        cr <- gsub(',','',cr)
+        Records <- readHTMLTable(cr)$curr_table
+        if(ncol(Records)>2)
+        {
+          current_locale <- Sys.getlocale("LC_TIME")
+          Sys.setlocale("LC_TIME", "C") 
+          names(Records)[1:5] <- c('Date','Close','Open','High','Low')
+          Records <- Records[,c(1,3,4,5,2,6)]
+          Records$Date <- as.Date(as.character(Records$Date),'%b %d %Y')
+          Records$Open <- ifelse(grepl('K',Records$Open),1000*as.numeric(as.character(gsub('K','',as.character(Records$Open)))),as.numeric(as.character(Records$Open)))
+          Records$High <- ifelse(grepl('K',Records$High),1000*as.numeric(as.character(gsub('K','',Records$High))),as.numeric(as.character(Records$High)))
+          Records$Low <- ifelse(grepl('K',Records$Low),1000*as.numeric(as.character(gsub('K','',Records$Low))),as.numeric(as.character(Records$Low)))
+          Records$Close <- ifelse(grepl('K',Records$Close),1000*as.numeric(as.character(gsub('K','',Records$Close))),as.numeric(as.character(Records$Close)))
+          
+          if(ncol(Records)>5)
+            if(names(Records)[6] == "Vol.")
+            {
+              Records$Volume <- as.numeric(as.character(Records[,6]))
+              Records$Volume[grep('K',Records[,6])] <- 1000*as.numeric(gsub('K','',Records[grep('K',Records[,6]),6]))
+              Records$Volume[grep('M',Records[,6])] <- 1000000*as.numeric(gsub('M','',Records[grep('M',Records[,6]),6]))
+              Records[,6] <- Records$Volume
+              Records <- xts(Records[,2:6],order.by = Records[,1])
+            }
+          if(length(grep('Vol.',names(Records))) == 0)
+            Records <- xts(Records[,2:5],order.by = Records[,1])
+          Sys.setlocale("LC_TIME", current_locale) 
+        }
+      }
+      if(status_code(r) != 200)
+      {
+        Records <- 'cannot connect to server'
+      }
+    }
+    if(auto.assign)
+      return(Symbols)
+    return(Records)
+  }
+
+"getSymbols.Poloniex" <- function 
 (Symbols,env,return.class='xts',index.class='Date',
  from='2007-01-01',
  to=Sys.Date(),
@@ -234,272 +456,7 @@
 
 
 
-"getSymbols.rogov" <-
-function(Symbols,env,return.class='xts',index.class='Date',
-         from='2007-01-01',
-         to=Sys.Date(),
-         adjust=FALSE,
-         period='day',
-         ...)
-{
-   importDefaults("getSymbols.rogov")
-     this.env <- environment()
-     for(var in names(list(...))) {
-        # import all named elements that are NON formals
-        assign(var, list(...)[[var]], this.env)
-     }
-	 options(warn = -1)
-     default.return.class <- return.class
-     default.from <- from
-     default.to <- to
-
-     if(missing(verbose)) verbose <- TRUE
-     if(missing(auto.assign)) auto.assign <- FALSE
-
-     p <- 0
-     if ("hour" == period) 
-		 {
-		 p <- 'Hourly' 
-		 limit<-16000
-		 }
-	if ("day" == period) 
-		 {
-		 p <- 'Daily' 
-		 limit<-16000
-		 }
-    if ("week" == period) 
-		{
-		p <- 'Weekly' 
-		limit<-10000
-		}
-    if ("month" == period)
-		{
-		p <- 'Monthly' 
-		limit<-1000
-		}
-	if ("year" == period)
-		{
-		p <- 'Annually'
-		limit<-100
-		}
-    if (p==0) 
-		 {
-			message(paste("Unkown period ", period))
-		 }
-  
-	format(as.Date(from),"%m.%d.%Y")->rogov.from
-	format(as.Date(to),"%m.%d.%Y")->rogov.to
-for(i in 1:length(Symbols)) {	
-	rogov.URL<-"http://www.rogovindex.com/Quote/searchentries?rogovindex.period="	
-	stock.URL <- paste(rogov.URL,p,"&limit=",limit,"&RegionFromDate=",rogov.from,"&regiontodate=",rogov.to,sep="")
-	tmp <- tempfile()
-    download.file(stock.URL, destfile=tmp,quiet=TRUE)
-    fr <- read.table(tmp, sep="{",header=FALSE)	 
-	as.character(unlist(fr[3:length(fr)]))->fr
-	gsub("ValueDateString:", "", fr)->fr
-	gsub("BaseValue:", "", fr)->fr
-	gsub("FValue:", "", fr)->fr
-	gsub("BValue:", "", fr)->fr
-	gsub("RValue:", "", fr)->fr
-	gsub("YValue:", "", fr)->fr
-	gsub("},", "", fr)->fr
-	gsub("}]}", "", fr)->fr		
-	t(as.data.frame(strsplit(fr,",")))->fr
- 
-    unlink(tmp)	 	 
-    
-	if(p=='Hourly')       
-		{
-		fr <- xts(apply(as.matrix(fr[,2:6]),2, as.numeric), as.POSIXct(strptime(fr[,1], "%m/%d/%Y %I:%M:%S %p")),src='rogov',updated=Sys.time())
-		colnames(fr) <- c('Base Value','F Value','B Value','R Value','Y Value')
-		}
-	if(p=='Monthly')       
-		{
-		fr <- xts(apply(as.matrix(fr[,2:6]),2, as.numeric), as.Date(strptime(paste("01/",fr[,1],sep=""), "%d/%m/%Y")),src='rogov',updated=Sys.time())
-		colnames(fr) <- c('Base Value','F Value','B Value','R Value','Y Value')
-		} 
-	if(p=='Annually')       
-		{
-		fr <- xts(apply(as.matrix(fr[,2:6]),2, as.numeric), as.Date(strptime(paste("01/01/",fr[,1],sep=""), "%d/%m/%Y")),src='rogov',updated=Sys.time())
-		colnames(fr) <- c('Base Value','F Value','B Value','R Value','Y Value')
-		} 	 
-	 
-    if(p=='Daily' | p=='Weekly')       
-		{
-		fr <- xts(apply(as.matrix(fr[,2:6]),2, as.numeric), as.Date(strptime(fr[,1], "%m/%d/%Y")),src='rogov',updated=Sys.time())
-		colnames(fr) <- c('Base Value','F Value','B Value','R Value','Y Value')
-		}
-
-       fr <- convert.time.series(fr=fr,return.class=return.class)
-     #  if(is.xts(fr))
-     #    indexClass(fr) <- index.class
-
-       Symbols[[i]] <-toupper(gsub('\\^','',Symbols[[i]]))
-       if(auto.assign)
-         assign(Symbols[[i]],fr,env)
-       if(i >= 5 && length(Symbols) > 5) {
-         message("pausing 1 second between requests for more than 5 symbols")
-         Sys.sleep(1)
-       }
-     }
-     if(auto.assign)
-       return(Symbols)
-    return(fr)
-}
-
-"getSymbols.Finam" <-
-  function(Symbols,env,return.class='xts',index.class='Date',
-           from='2007-01-01',
-           to=Sys.Date(),
-           adjust=FALSE,
-           period='day',
-           market=NULL,
-           ...)
-  {
-    importDefaults("getSymbols.Finam")
-    this.env <- environment()
-    for(var in names(list(...))) {
-      # import all named elements that are NON formals
-      assign(var, list(...)[[var]], this.env)
-    }
-    
-    default.return.class <- return.class
-    default.from <- from
-    default.to <- to
-    
-    if(missing(verbose)) verbose <- FALSE
-    if(missing(auto.assign)) auto.assign <- FALSE
-    
-    p <- 0
-    
-    if ("tick" == period) p <- 1
-    if ("1min" == period) p <- 2
-    if ("5min" == period) p <- 3
-    if ("10min" == period) p <- 4
-    if ("15min" == period) p <- 5
-    if ("30min" == period) p <- 6
-    if ("hour" == period) p <- 7
-    if ("day" == period) p <- 8
-    if ("week" == period) p <- 9
-    if ("month" == period) p <- 10
-    
-    if (p==0) {
-      message(paste("Unkown period ", period))
-    }	 
-    
-    if (!exists("finam.stock.list")){
-      finam.stock.list <- loadSymbolList(src='Finam')
-      assign('finam.stock.list', finam.stock.list, env)
-    }
-    fr <- NaN
-    for(i in 1:length(Symbols)) {
-      
-      return.class <- getSymbolLookup()[[Symbols[[i]]]]$return.class
-      return.class <- ifelse(is.null(return.class),default.return.class,
-                             return.class)
-      from <- getSymbolLookup()[[Symbols[[i]]]]$from
-      from <- if(is.null(from)) default.from else from
-      to <- getSymbolLookup()[[Symbols[[i]]]]$to
-      to <- if(is.null(to)) default.to else to
-      
-      from.y <- as.numeric(strsplit(as.character(as.Date(from,origin='1970-01-01')),'-',)[[1]][1])
-      from.m <- as.numeric(strsplit(as.character(as.Date(from,origin='1970-01-01')),'-',)[[1]][2])-1
-      from.d <- as.numeric(strsplit(as.character(as.Date(from,origin='1970-01-01')),'-',)[[1]][3])
-      to.y <- as.numeric(strsplit(as.character(as.Date(to,origin='1970-01-01')),'-',)[[1]][1])
-      to.m <- as.numeric(strsplit(as.character(as.Date(to,origin='1970-01-01')),'-',)[[1]][2])-1
-      to.d <- as.numeric(strsplit(as.character(as.Date(to,origin='1970-01-01')),'-',)[[1]][3])
-      
-      Symbols.name <- getSymbolLookup()[[Symbols[[i]]]]$name
-      Symbols.name <- ifelse(is.null(Symbols.name),Symbols[[i]],Symbols.name)
-      if(verbose) cat("downloading ",Symbols.name,".....\n\n")
-      
-      
-      if(!is.null(market))
-      {
-        finam.stock <- finam.stock.list[as.character(finam.stock.list$Symbol) == Symbols.name,]
-        Symbols.id <- finam.stock[finam.stock$Market == market,]$Id
-      }
-      if(is.null(market))
-      {
-        finam.stock <- finam.stock.list[as.character(finam.stock.list$Symbol) == Symbols.name,]
-        Symbols.id <- finam.stock[which.min(finam.stock$Market),]$Id
-        market <- finam.stock[which.min(finam.stock$Market),]$Market
-      }
-      
-      if (length(Symbols.id)==0){
-        if (verbose)
-          cat("Don't know about",Symbols[[i]],"\n\n")
-        next
-      }
-      
-      finam.HOST <- 'export.finam.ru'
-      finam.URL <- "/table.csv?d=d&f=table&e=.csv&dtf=1&tmf=1&MSOR=0&sep=1&sep2=1&at=1&"
-      
-      stock.URL <- paste(finam.URL,
-                         "p=", p,
-                         "&market=",1,
-                         "&em=",Symbols.id,
-                         "&df=",from.d,
-                         "&mf=",from.m,
-                         "&yf=",from.y,
-                         "&dt=",to.d,
-                         "&mt=",to.m,
-                         "&yt=",to.y,
-                         "&cn=",Symbols.name,
-                         sep='')
-      if (verbose) cat(stock.URL);
-      tmp <- tempfile()
-      if (p==1){
-        stock.URL <- paste('http://', finam.HOST, stock.URL, '&datf=6' , sep='')
-      }else {
-        stock.URL <- paste('http://', finam.HOST, stock.URL, '&datf=1' , sep='')
-      }
-      download.file(stock.URL, destfile=tmp, quiet=!verbose)
-      fr <- read.csv(tmp, as.is=TRUE, colClasses="character")
-      unlink(tmp)
-      
-      if(verbose) cat("done.\n")
-      if (p==1){
-        if(verbose) print(head(fr))
-        fr <- xts(apply(as.matrix(fr[,(5:6)]),2, as.numeric), as.POSIXct(strptime(paste(fr[,3],fr[,4]), "%Y%m%d %H%M%S")),
-                  src='finam',updated=Sys.time())
-        colnames(fr) <- paste(toupper(gsub('\\^','',Symbols.name)),
-                              c('Close','Volume'),
-                              sep='.')
-      }else if (p>7) {
-        fr <- xts(apply(as.matrix(fr[,(5:9)]),2, as.numeric), as.Date(strptime(fr[,3], "%Y%m%d")),
-                  src='finam',updated=Sys.time())
-        colnames(fr) <- paste(toupper(gsub('\\^','',Symbols.name)),
-                              c('Open','High','Low','Close','Volume'),
-                              sep='.')
-      }else {
-        fr <- xts(apply(as.matrix(fr[,(5:9)]),2,as.numeric), as.POSIXct(strptime(paste(fr[,3],fr[,4]), "%Y%m%d %H%M%S")),
-                  src='finam',updated=Sys.time())
-        colnames(fr) <- paste(toupper(gsub('\\^','',Symbols.name)),
-                              c('Open','High','Low','Close','Volume'),
-                              sep='.')
-      }
-      
-      fr <- convert.time.series(fr=fr,return.class=return.class)
-      if(is.xts(fr) && p>7)
-        indexClass(fr) <- index.class
-      
-      Symbols[[i]] <-toupper(gsub('\\^','',Symbols[[i]]))
-      if(auto.assign)
-        assign(Symbols[[i]],fr,env)
-      if(i >= 5 && length(Symbols) > 5) {
-        message("pausing 1 second between requests for more than 5 symbols")
-        Sys.sleep(1)
-      }
-    }
-    if(auto.assign)
-      return(Symbols)
-    
-    return(fr)
-  }
-
-
-"getSymbols.mfd" <-
+"getSymbols.Mfd" <-
 function(Symbols,env,return.class='xts',index.class='Date',
          from='2007-01-01',
          to=Sys.Date(),
@@ -652,85 +609,33 @@ function (fr, return.class)
     }
 }
 
-"getSymbols.Forts" <-
-function(Symbols,env,return.class='xts',index.class='Date',
-         from='2007-01-01',
-         to=Sys.Date(),
-         adjust=FALSE,
-         period='day',
-         ...)
+
+"getInvesting_id" <- function(Symbol='AAPL')
 {
-     importDefaults("getSymbols.Forts")
-     this.env <- environment()
-     for(var in names(list(...))) {
-        # import all named elements that are NON formals
-        assign(var, list(...)[[var]], this.env)
-     }
-
-     default.return.class <- return.class
-     default.from <- from
-     default.to <- to
-
-     if(missing(verbose)) verbose <- FALSE
-     if(missing(auto.assign)) auto.assign <- FALSE
-
-     forts.URL <- "http://www.rts.ru/ru/forts/contractresults-exp.html?"
-
-     for(i in 1:length(Symbols)) {
-
-       return.class <- getSymbolLookup()[[Symbols[[i]]]]$return.class
-       return.class <- ifelse(is.null(return.class),default.return.class,
-                              return.class)
-       from <- getSymbolLookup()[[Symbols[[i]]]]$from
-       from <- if(is.null(from)) default.from else from
-       to <- getSymbolLookup()[[Symbols[[i]]]]$to
-       to <- if(is.null(to)) default.to else to
-
-       from.f <- format(as.Date(from,origin='1970-01-01'), '%Y%m%d')
-       to.f <- format(as.Date(to,origin='1970-01-01'), '%Y%m%d')
-
-       Symbols.name <- getSymbolLookup()[[Symbols[[i]]]]$name
-       Symbols.name <- ifelse(is.null(Symbols.name),Symbols[[i]],Symbols.name)
-       if(verbose) cat("downloading ",Symbols.name,".....\n\n")
-
-       tmp <- tempfile()
-       stock.URL <- paste(forts.URL,
-                           "day1=", from.f,
-                           "&day2=", to.f,
-                           "&isin=",gsub(' ', '%20', Symbols.name),
-                           sep='')
-
-       download.file(stock.URL, destfile=tmp, quiet=!verbose)
-
-       fr <- read.csv(tmp, as.is=TRUE, skip=1)
-       unlink(tmp)
-
-       if(verbose) cat("done.\n")
-
-      fr <- xts(as.matrix(cbind(fr[,(4:7)], fr[,12], fr[,14]) ), as.Date(strptime(fr[,1], "%d.%m.%Y")),
-                src='forts',updated=Sys.time())
-
-       colnames(fr) <- paste(toupper(gsub('[ -.]','',Symbols.name)),
-                             c('Open','High','Low','Close', 'Volume', 'Positions'),
-                             sep='.')
-
-       fr <- convert.time.series(fr=fr,return.class=return.class)
-       if(is.xts(fr))
-         indexClass(fr) <- index.class
-
-       Symbols[[i]] <-toupper(gsub('[ -.]','',Symbols[[i]]))
-       if(auto.assign)
-         assign(Symbols[[i]],fr,env)
-       if(i >= 5 && length(Symbols) > 5) {
-         message("pausing 1 second between requests for more than 5 symbols")
-         Sys.sleep(1)
-       }
-     }
-     if(auto.assign)
-       return(Symbols)
-
-     return(fr)
-
+  url = 'https://www.investing.com/search/service/search'
+  
+  headers = add_headers('Host' = 'www.investing.com',
+                        'Origin' = 'https://www.investing.com',
+                        'Referer' = 'https://www.investing.com/search/service/search',
+                        'X-Requested-With' = 'XMLHttpRequest',
+                        'Content-Type' = 'application/x-www-form-urlencoded',
+                        'Connection' = 'keep-alive',
+                        'Accept-Language' = 'en-US,en;q=0.9,fr;q=0.8,ja;q=0.7,es;q=0.6',
+                        'Accept-Encoding' = 'Encoding:gzip, deflate, br',
+                        'Accept' = '*/*',
+                        'User-Agent'= 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.108 Safari/537.36')
+  
+  data = paste0('search_text=',Symbol,'&term=',Symbol,'&country_id=0&tab_id=All')
+  
+  r <- POST(url,headers,body = data,encode = "raw")
+  
+  if(status_code(r) == 200)
+  {
+    cr <- content(r,as = 'text')
+    json_data <- fromJSON(cr)
+  }
+  inv_id <- json_data$All$pair_ID[which.max(json_data$All$popularity_rank)]
+  return(inv_id)
 }
 
 

@@ -46,7 +46,7 @@ install_github("arbuzovv/rusquant")
 
 ```R
 library(rusquant)
-loadSymbolList('Finam') # download all available symbols in Finam.ru 
+getSymbolList('Finam') # download all available symbols in finam.ru 
 getSymbols('LKOH',src='Finam') # default = main market
 getSymbols('LKOH',src = 'Finam',market=1) # main market
 getSymbols('LKOH',src = 'Finam',market=8) # ADR of LKOH, from market id from loadSymbolList
@@ -60,7 +60,8 @@ getSymbols('LKOH',src='Finam',period='15min') # 15 min bar
 ## get data from Investing.com
 ```R
 library(rusquant)
-loadSymbolList(src='investing',country='UK') # download all available symbols in Finam.ru 
+getSymbolList(src='Investing',country='UK') # download all available symbols in investing.com 
+getSymbols('LKOH',src='Investing')
 getDividends(country = 'India')
 getIPO()
 getEarnings()

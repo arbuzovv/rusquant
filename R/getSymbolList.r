@@ -1,13 +1,13 @@
 
  #function retrives All avalible instruments of exchange
- "loadSymbolList" <- function 
+ "getSymbolList" <- function 
  (src='poloniex',
   verbose=FALSE,
   auto.assign=FALSE,
   country='',
   ...)
  {
-   importDefaults("loadSymbolList"); #rewrite default values if specified by setDefaults
+   importDefaults("getSymbolList"); #rewrite default values if specified by setDefaults
    env <- environment()
    src <- tolower(src)
    
