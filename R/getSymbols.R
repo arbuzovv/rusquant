@@ -157,7 +157,7 @@
            period='day',
            ...)
   {
-    importDefaults("getSymbols.Forts")
+    importDefaults("getSymbols.Investing")
     this.env <- environment()
     for(var in names(list(...))) {
       # import all named elements that are NON formals
@@ -230,7 +230,7 @@
  period='day',
  ...)
 {
-	importDefaults("getSymbols.poloniex"); #rewrite default values if specified by setDefaults
+	importDefaults("getSymbols.Poloniex"); #rewrite default values if specified by setDefaults
 	local_env <- environment()
 	for(var in names(list(...))) {
 		# import all named elements that are NON formals
@@ -464,7 +464,7 @@ function(Symbols,env,return.class='xts',index.class='Date',
          period='day',
          ...)
 {
-     importDefaults("getSymbols.mfd")
+     importDefaults("getSymbols.Mfd")
      this.env <- environment()
      for(var in names(list(...))) {
         # import all named elements that are NON formals

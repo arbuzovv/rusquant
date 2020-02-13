@@ -67,5 +67,11 @@ getIPO()
 getEarnings()
 ```
 
+## get data from [mfd.ru](http://mfd.ru/export/)
+```R
+library(rusquant)
+getSymbols('LKOH',src='Mfd')
+```
+
 
 
