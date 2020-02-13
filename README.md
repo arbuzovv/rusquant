@@ -42,7 +42,7 @@ install_github("arbuzovv/rusquant")
 Наиболее подробная информация находится на сайте [rusquant.ru](http://rusquant.ru)
 
 
-## get data from Finam.ru
+## get data from [Finam.ru](https://www.finam.ru/profile/moex-akcii/gazprom/export/)
 
 ```R
 library(rusquant)
@@ -57,7 +57,7 @@ getSymbols('LKOH',src='Finam',period='5min') # 5 min bar
 getSymbols('LKOH',src='Finam',period='15min') # 15 min bar 
 ```
 
-## get data from Investing.com
+## get data from [Investing.com](https://www.investing.com/stock-screener/?sp=country::5|sector::a|industry::a|equityType::a%3Ceq_market_cap;1)
 ```R
 library(rusquant)
 getSymbolList(src='Investing',country='UK') # download all available symbols in investing.com 
