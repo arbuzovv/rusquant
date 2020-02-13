@@ -50,23 +50,27 @@ getSymbols('LKOH',src='Finam') # default = main market
 getSymbols('LKOH',src = 'Finam',market=1) # main market
 getSymbols('LKOH',src = 'Finam',market=8) # ADR of LKOH, from market id from loadSymbolList
 
-#type period
+# type period
 getSymbols('LKOH',src='Finam',period='day') # day bars - default parameter
 getSymbols('LKOH',src='Finam',period='5min') # 5 min bar 
 getSymbols('LKOH',src='Finam',period='15min') # 15 min bar 
+
+# download list of Symbols
+available_etf_list = c("FXMM", "FXCN", "FXIT", "FXJP", "FXDE", "FXUS", "FXAU", "FXUK", "FXRB", "FXRL", "FXRU")
+getSymbols(available_etf_list,src='Finam') 
 ```
 
 ## get data from [Investing.com](https://www.investing.com/stock-screener/?sp=country::5|sector::a|industry::a|equityType::a%3Ceq_market_cap;1)
 ```R
 library(rusquant)
 getSymbolList(src='Investing',country='UK') # download all available symbols in investing.com 
-getSymbols('LKOH',src='Investing')
+getSymbols('LKOH',src='Investing',auto.assign = F)
 getDividends(country = 'India')
 getIPO()
 getEarnings()
 ```
 
-## get data from [mfd.ru](http://mfd.ru/export/)
+## get data from [Mfd.ru](http://mfd.ru/export/)
 ```R
 library(rusquant)
 getSymbols('LKOH',src='Mfd')
