@@ -39,7 +39,7 @@
     }	 
     
     if (!exists("finam.stock.list")){
-      finam.stock.list <- loadSymbolList(src='Finam')
+      finam.stock.list <- getSymbolList(src='Finam')
       assign('finam.stock.list', finam.stock.list, env)
     }
     fr <- NaN
@@ -218,7 +218,7 @@
       }
     }
     if(auto.assign)
-      return(Symbols)
+      return(Records)
     return(Records)
   }
 
