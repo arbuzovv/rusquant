@@ -41,9 +41,6 @@ install_github("arbuzovv/rusquant")
 
 В блоге сайта [infoption.ru](http://infoption.ru/search/rusquant)
 
-Наиболее подробная информация находится на сайте [rusquant.ru](http://rusquant.ru)
-
-
 ## get data from [Finam.ru](https://www.finam.ru/profile/moex-akcii/gazprom/export/)
 
 ```R
