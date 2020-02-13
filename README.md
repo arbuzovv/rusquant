@@ -36,7 +36,9 @@ install_github("arbuzovv/rusquant")
 Практические примеры применения можно найти:
 
 В блоге официального сайта: [rusquant](http://rusquant.ru/blog/)
+
 На персональной странице Сергея Едунова: [algorithmist.ru](http://www.algorithmist.ru/p/rusquant.html)
+
 В блоге сайта [infoption.ru](http://infoption.ru/search/rusquant)
 
 Наиболее подробная информация находится на сайте [rusquant.ru](http://rusquant.ru)
