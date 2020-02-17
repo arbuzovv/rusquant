@@ -80,6 +80,8 @@ library(data.table)
       {
         if(length(html_nodes(symbols[i], "span"))>0)
         {
+        current_locale <- Sys.getlocale("LC_TIME")
+        Sys.setlocale("LC_TIME", "C") 
         country <- as.character(html_nodes(symbols[i], "span")[1])
         country <- gsub('\"','',country)
         symbol_name <- as.character(html_nodes(symbols[i], "td")[2])
@@ -113,6 +115,7 @@ library(data.table)
           Records <- record
         if(i!=2)
           Records <- rbind(Records,record)
+        Sys.setlocale("LC_TIME", current_locale) 
         }
       }
       }
