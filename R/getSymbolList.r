@@ -73,7 +73,7 @@
    if (src == "finam")	
    {
      tmp <- tempfile()
-     download.file(downloadUrl, destfile = tmp,method = "libcurl")
+     download.file(downloadUrl, destfile = tmp)
    }
    
    if (src == "investing")	
