@@ -2,22 +2,52 @@
 
 
 
-
+library(data.table)
 library(httr)
 library(jsonlite)
 library(rvest)
 
-"getEarnings" <- function(from=Sys.Date()-10,to=Sys.Date())
+"getEarnings" <- function(from=Sys.Date()-10,to=Sys.Date(),country='United States')
 {
   url = 'https://www.investing.com/earnings-calendar/Service/getCalendarFilteredData'
   #end_date = '2019-05-17'
-  #date = '2019-05-01'
+  #start_date = '2019-05-01'
   end_date = to
-  date = from
+  start_date = from
   
-  data = paste0('country%5B%5D=29&country%5B%5D=25&country%5B%5D=54&country%5B%5D=145&country%5B%5D=34&country%5B%5D=174&country%5B%5D=163&country%5B%5D=32&country%5B%5D=70&country%5B%5D=6&country%5B%5D=27&country%5B%5D=37&country%5B%5D=122&country%5B%5D=15&country%5B%5D=113&country%5B%5D=107&country%5B%5D=55&country%5B%5D=24&country%5B%5D=59&country%5B%5D=71&country%5B%5D=22&country%5B%5D=17&country%5B%5D=51&country%5B%5D=39&country%5B%5D=93&country%5B%5D=106&country%5B%5D=14&country%5B%5D=48&country%5B%5D=33&country%5B%5D=23&country%5B%5D=10&country%5B%5D=35&country%5B%5D=92&country%5B%5D=57&country%5B%5D=94&country%5B%5D=68&country%5B%5D=103&country%5B%5D=42&country%5B%5D=109&country%5B%5D=188&country%5B%5D=7&country%5B%5D=105&country%5B%5D=172&country%5B%5D=21&country%5B%5D=43&country%5B%5D=20&country%5B%5D=60&country%5B%5D=87&country%5B%5D=44&country%5B%5D=193&country%5B%5D=125&country%5B%5D=45&country%5B%5D=53&country%5B%5D=38&country%5B%5D=170&country%5B%5D=100&country%5B%5D=56&country%5B%5D=52&country%5B%5D=238&country%5B%5D=36&country%5B%5D=90&country%5B%5D=112&country%5B%5D=110&country%5B%5D=11&country%5B%5D=26&country%5B%5D=162&country%5B%5D=9&country%5B%5D=12&country%5B%5D=46&country%5B%5D=41&country%5B%5D=202&country%5B%5D=63&country%5B%5D=123&country%5B%5D=61&country%5B%5D=143&country%5B%5D=4&country%5B%5D=5&country%5B%5D=138&country%5B%5D=178&country%5B%5D=75&',
-                'dateFrom=',date,'&dateTo=',end_date,'&currentTab=custom&submitFilters=1&limit_from=0')
   
+  country_dict <- t(matrix(c(29,'Argentina',25,'Australia',54,'Austria',145,'Bahrain',34,'Belgium',174,'Bosnia-Herzegovina',163,'Botswana',32,'Brazil',70,'Bulgaria',6,'Canada',27,'Chile',37,'China',122,'Colombia',15,'Costa Rica',113,'Croatia',107,'Cyprus',55,'Czech Republic',24,'Denmark',59,'Egypt',71,'Finland',22,'France',17,'Germany',51,'Greece',39,'Hong Kong',93,'Hungary',106,'Iceland',14,'India',48,'Indonesia',33,'Ireland',23,'Israel',10,'Italy',35,'Japan',92,'Jordan',57,'Kenya',94,'Kuwait',68,'Lebanon',103,'Luxembourg',42,'Malaysia',109,'Malta',188,'Mauritius',7,'Mexico',105,'Morocco',172,'Namibia',21,'Netherlands',43,'New Zealand',20,'Nigeria',60,'Norway',87,'Oman',44,'Pakistan',193,'Palestinian Territory',125,'Peru',45,'Philippines',53,'Poland',38,'Portugal',170,'Qatar',100,'Romania',56,'Russia',52,'Saudi Arabia',238,'Serbia',36,'Singapore',90,'Slovakia',112,'Slovenia',110,'South Africa',11,'South Korea',26,'Spain',162,'Sri Lanka',9,'Sweden',12,'Switzerland',46,'Taiwan',41,'Thailand',202,'Tunisia',63,'Turkey',123,'Uganda',61,'Ukraine',143,'United Arab Emirates',4,'United Kingdom',5,'United States',138,'Venezuela',178,'Vietnam',75,'Zimbabwe'),2,80))
+  
+  if(country == '')
+    id_country <- country_dict[,1]
+  
+  if(country != '')
+  {
+    id_country <- country_dict[country_dict[,2] %in% country,1]
+    if(length(id_country) == 0)
+    {
+      print("download failed;")
+      id_country <- country_dict[,1]
+    }
+  }
+  
+  date_diff <- as.Date(end_date)-as.Date(start_date)
+  date_range <- as.Date(start_date)+1:date_diff
+  
+  print('Fetching data from investing.com. Please wait...')
+  pb <- txtProgressBar(min = 1, max = as.numeric(date_diff), style = 3) # Создаём progress bar
+  
+  
+  for(date in date_range)
+  {
+    setTxtProgressBar(pb, as.numeric(as.Date(date,origin = "1970-01-01")-as.Date(start_date,origin = "1970-01-01"))) # Обновляем progress bar  
+    data = paste0(paste0('country%5B%5D=',id_country,'&',collapse = ''),
+                  'dateFrom=',as.Date(date,origin = "1970-01-01"),'&dateTo=',as.Date(date,origin = "1970-01-01"),'&currentTab=custom&submitFilters=1&limit_from=0')
+    if(length(date_range)==1)
+      data = paste0(paste0('country%5B%5D=',id_country,'&',collapse = ''),
+                    'dateFrom=',start_date,'&dateTo=',end_date,'&currentTab=custom&submitFilters=1&limit_from=0')
+    
+    
   headers = add_headers('Host' = 'www.investing.com',
                         'Origin' = 'https://www.investing.com',
                         'Referer' = 'https://www.investing.com/earnings-calendar/',
@@ -92,7 +122,15 @@ library(rvest)
   {
     Records <- 'cannot connect to server'
   }
-  return(Records)
+  if(length(symbols)>1)
+  {
+    if(exists('Records_result'))
+      Records_result <- rbind(Records_result,Records)
+    if(!exists('Records_result'))
+      Records_result <- Records
+  }
+  }
+  return(unique(Records_result))
 }
 
 
