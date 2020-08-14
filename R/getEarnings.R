@@ -72,6 +72,8 @@ library(rvest)
     ### each row
     html_rvest <- read_html(json_data2)
     symbols <- html_nodes(html_rvest, "tr")
+    current_locale <- Sys.getlocale("LC_TIME")
+    Sys.setlocale("LC_TIME", "C") 
     for(i in 1:length(symbols))
     {
       if(length(html_nodes(symbols[i], "span"))==0)
@@ -118,6 +120,7 @@ library(rvest)
       }
     }
   }
+  Sys.setlocale("LC_TIME", current_locale) 
   if(status_code(r) != 200)
   {
     Records <- 'cannot connect to server'
