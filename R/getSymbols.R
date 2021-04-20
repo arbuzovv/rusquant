@@ -177,7 +177,7 @@
     # information for request
     for(Symbol in Symbols) {
       
-      headers = add_headers('Host' = 'www.investing.com','Origin' = 'https://www.investing.com','Referer' = 'https://www.investing.com/dividends-calendar/','X-Requested-With' = 'XMLHttpRequest','Content-Type' = 'application/x-www-form-urlencoded','Connection' = 'keep-alive','Accept-Language' = 'en-US,en;q=0.9,fr;q=0.8,ja;q=0.7,es;q=0.6','Accept-Encoding' = 'Encoding:gzip, deflate, br','Accept' = '*/*','User-Agent'= 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.108 Safari/537.36')
+      headers = add_headers('Host' = 'www.investing.com','Origin' = 'https://www.investing.com','Referer' = 'https://www.investing.com/dividends-calendar/','X-Requested-With' = 'XMLHttpRequest','Content-Type' = 'application/x-www-form-urlencoded','Connection' = 'keep-alive','Accept-Language' = 'en-US,en;q=0.9,fr;q=0.8,ja;q=0.7,es;q=0.6','Accept-Encoding' = 'Encoding:gzip, deflate','Accept' = '*/*','User-Agent'= 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.108 Safari/537.36')
       data <- paste0(data = 'curr_id=',getInvesting_id(Symbol),'&header=',Symbol,'+Historical+Data&st_date=',format(as.Date(start_date),'%m/%d/%Y'),'&end_date=',format(as.Date(end_date),'%m/%d/%Y'),'&interval_sec=Daily&sort_col=date&sort_ord=DESC&action=historical_data')
       # request
       r <- POST(url,headers,body = data,encode = "raw")
