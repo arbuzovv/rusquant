@@ -22,7 +22,7 @@ library(rvest)
                         'Content-Type' = 'application/x-www-form-urlencoded',
                         'Connection' = 'keep-alive',
                         'Accept-Language' = 'en-US,en;q=0.9,fr;q=0.8,ja;q=0.7,es;q=0.6',
-                        'Accept-Encoding' = 'Encoding:gzip, deflate, br',
+                        'Accept-Encoding' = 'Encoding:gzip, deflate',
                         'Accept' = '*/*',
                         'User-Agent'= 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.108 Safari/537.36')
   
