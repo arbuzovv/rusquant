@@ -1,8 +1,16 @@
-
-
-library(httr)
-library(jsonlite)
-library(rvest)
+#' @title Get stock split calendar data from investing.com
+#'
+#' @description This function retrieves the stock split calendar data from investing.com between two given dates.
+#'
+#' @param from A date in the format 'YYYY-MM-DD' representing the start of the date range to retrieve data for (default is Sys.Date()-10).
+#' @param to A date in the format 'YYYY-MM-DD' representing the end of the date range to retrieve data for (default is Sys.Date()).
+#' @return A data.table object containing the stock split calendar data from investing.com.
+#' @note Not for the faint of heart. All profits and losses related are yours and yours alone. If you don't like it, write it yourself.
+#' @author Vyacheslav Arbuzov
+#'
+#' @examples
+#' getSplits(from=Sys.Date(),to=Sys.Date()+3)
+#' @export
 
 "getSplits" <- function(from=Sys.Date()-10,to=Sys.Date())
 {
@@ -23,7 +31,7 @@ headers = add_headers('Host' = 'www.investing.com',
   'Accept' = '*/*',
   'User-Agent'= 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.108 Safari/537.36')
 
-r <- POST(url,headers,body = data,encode = "raw",verbose())
+r <- POST(url,headers,body = data,encode = "raw")
 
 if(status_code(r) == 200)
 {
@@ -32,7 +40,7 @@ if(status_code(r) == 200)
   json_data2 <- gsub('\n','',json_data$data)
   json_data2 <- gsub('\t','',json_data2)
   json_data2 <- gsub('\"','',json_data2)
-  
+
   ### each row
   html_rvest <- read_html(json_data2)
   symbols <- html_nodes(html_rvest, "tr")
@@ -69,7 +77,7 @@ if(status_code(r) != 200)
 }
 return(Records)
 }
-  
+
 
 
 

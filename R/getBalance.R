@@ -1,9 +1,0 @@
-getBalance <- function(Connection) 
-{
-        url <- "https://hft-api.lykke.com/api/Wallets"
-
-        resp <- httr::GET(url,
-                           httr::add_headers(`api-key` = conn$key),
-                           encode = "json")
-        return(content(resp, "parsed"))
-}

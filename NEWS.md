@@ -1,0 +1,53 @@
+# rusquant 1.0.1
+
+* add trading API from Tinkoff, Alor, Finam
+* add source Tinkoff to getDividends
+* add source Moex - getSymbols.Moex
+* add source MarketWatch - getSymbols.MarketWatch
+* fix problems with getFinam
+* add new source to getSymbolList
+* add getSymbols from brokers Alor,Tinkoff
+* clean code functions and optimize
+
+
+# rusquant 0.4.2
+
+* loadSymbolList renamed to getSymbolList
+* all datasources now from big letter (Mfd,Alor,Investing,Finam,Poloniex)
+* getSymbolList function added "Investing" instruments
+* fix getOptionChain for download option desk
+* delete old datasources without access (rogovindex, dividends from troika)
+
+# rusquant 0.4.1
+
+* loadSymbolList function added "Finam" instruments
+* Add "market"" parameter to getSymbols function
+* More flexible version of downloading from "Finam"
+* getDividends changed type of downloading for long history
+* getInvesting from investing.com
+
+
+# rusquant 0.4.0
+
+* Add function Connect for connection to exchanges
+* Add function checkConnection
+* Add function getBalance
+* Add function getOrders for downloading account orders
+* Add function Order for for creation object Order
+* Add function openOrder
+* Add function cancelOrder
+
+# rusquant 0.3.9
+
+* Add function loadSymbolList for downloading availible symbols
+* Add help for function loadSymbolList
+* Add additional exchanges to function getOrderbook
+* Add additional exchanges to function getTradelog
+
+# rusquant 0.3.8
+
+* Add function getOrderbook for downloading order book snapshots from Poloniex
+* Add function getTradelog for downloading trades from Poloniex
+* Poloniex output of data now in standart format OHLCV
+* Change help of function getSymbols
+
