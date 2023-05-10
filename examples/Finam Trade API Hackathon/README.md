@@ -101,7 +101,7 @@ install_github("arbuzovv/rusquant")
 
 *Дизайн:*
 
--   все основные функции собраны в библиотеку и размещены на [github](https://github.com/arbuzovv/rusquant), библиотека подготовлена и отправлена на CRAN
+-   все основные функции собраны в библиотеку и размещены на [github](https://github.com/arbuzovv/rusquant), библиотека подготовлена и размещена на [CRAN](https://CRAN.R-project.org/package=rusquant)
 
 *Функциональность:*
 
