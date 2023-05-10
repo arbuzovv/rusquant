@@ -1,19 +1,16 @@
 Package: rusquant
 Type: Package
-Title: Quant free datasources
-Version: 0.4.2
-Date: 2020-02-13
-Author: Sergey Edunov[cre, aut], Vyacheslav Arbuzov[cre, aut], Aleksey Kutergin[ctb]
-Depends: quantmod,lubridate,data.table,jsonlite,httr,rvest,RCurl,XML
-Suggests:
+Title: Quantitative Trading Framework
+Version: 1.0.1
+Date: 2023-05-08
+Author: Vyacheslav Arbuzov[cph, cre, aut], Sergey Edunov[aut]
+Depends: quantmod,data.table,jsonlite,httr,xts
+Imports: XML,stringr,jose,stats,rvest
 Maintainer: Vyacheslav Arbuzov <arbuzov1989@gmail.com>
-Description: Rusquant is package for interaction with trading API of different exchanges and trading terminals. It allows to download financial free datasources
+Description: Collection of functions to retrieve financial data from various sources, including brokerage and exchange platforms, financial websites, and data providers. Includes functions to retrieve account information, portfolio information, and place/cancel orders from different brokers. Additionally, allows users to download historical data such as earnings, dividends, stock splits.
 LazyLoad: yes
 License: GPL-3
-URL: http://www.rusquant.ru
-Packaged: 2013-05-05 22:57:08 UTC; rforge
-Repository: R-Forge
-Date/Publication: 2013-05-04 13:33:41
-Repository/R-Forge/Project: rusquant
-Repository/R-Forge/Revision: 17
-Repository/R-Forge/DateTimeStamp: 2013-05-04 13:33:41
+Encoding: UTF-8
+URL: https://rusquant.ru,https://docs.rusquant.ru
+BugReports: https://github.com/arbuzovv/rusquant/issues
+RoxygenNote: 7.1.1
