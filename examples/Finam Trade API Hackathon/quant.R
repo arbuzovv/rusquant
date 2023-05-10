@@ -109,6 +109,8 @@ signals$w = signals$V3*w_opt
 position_per_symbol = signals[,sum(w,na.rm = T),by='V1']
 names(position_per_symbol) = c('symbol','w')
 
+fwrite(x = position_per_symbol,file = 'position_per_symbol.csv')
+
 
 ##################### Trading execution logic ##############################
 leverage = 4
@@ -119,6 +121,7 @@ finam_universe = data.table(getSymbolList(src = 'Finam',api.key = finam_token))
 # actual portfolio
 finam_portfolio = getPortfolio(src = 'Finam',api.key = finam_token,clientId = finam_account)
 capital = finam_portfolio$money$balance * leverage # get from Portfolio
+position_per_symbol = fread('position_per_symbol.csv')
 position_per_symbol$money = capital*position_per_symbol$w
 
 # theoretical portfolio
