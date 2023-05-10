@@ -8,6 +8,13 @@ library(PortfolioAnalytics)
 library(PerformanceAnalytics)
 devtools::install_github('arbuzovv/rusquant')
 
+# set params for your account
+leverage = 4
+finam_token = 'set_your_finam_token'
+finam_account = 'set_your_finam_account'
+# token data for Finam Hackaton
+rusquant_token = 'AAHXE1642J'
+
 ##################### Trading execution logic ##############################
 
 w_opt = fread('w_opt.csv')
@@ -24,10 +31,6 @@ for(i in 1:nrow(alpha_universe))
 signals$w = signals$V3*w_opt
 position_per_symbol = signals[,sum(w,na.rm = T),by='V1']
 names(position_per_symbol) = c('symbol','w')
-
-leverage = 4
-finam_token = 'set_your_finam_token'
-finam_account = 'set_your_finam_account'
 finam_universe = data.table(getSymbolList(src = 'Finam',api.key = finam_token))
 
 # actual portfolio
@@ -41,12 +44,17 @@ universe_trade = unique(trade_positions$symbol)
 futures_type = '6.23'
 trade_positions$futures_code = finam_universe[shortName %in% paste(universe_trade,futures_type,sep = '-')]$code
 # calc position size
+trade_positions$price = 0
 trade_positions$size = 0
+if(!exists('symbol_list_FINAM')) getSymbolList(src = 'Finam',auto.assign = TRUE)
 for(i in 1:nrow(trade_positions))
 {
   trade_symbol = trade_positions$futures_code[i]
-  last_price = tail((getSymbols.Finam(trade_symbol,period = '1min',from=Sys.Date()-2))[,4],1)
+  last_price = try(tail((getSymbols(trade_symbol,src='Finam',period = '1min',from=Sys.Date()-2,auto.assign = F))[,4],1),silent = T)
+  if(class(last_price)[1] == "try-error")
+    last_price = try(tail((getSymbols(trade_symbol,src='Moex',period = '1min',from=Sys.Date()-2,auto.assign = F)[,2]),1),silent = T)
   trade_positions$size[i] = abs(as.numeric(ceiling(trade_positions$money[i]/last_price)))
+  trade_positions$price[i] = abs(as.numeric(last_price))
 }
 
 # diff between theoretical and actual portfolio
@@ -59,7 +67,10 @@ change_portfolio$trade_size = change_portfolio$size - change_portfolio$balance
 for(i in 1:nrow(change_portfolio))
 {
   trade_symbol = change_portfolio$futures_code[i]
-  last_price = tail((getSymbols.Finam(trade_symbol,period = '1min',from=Sys.Date()-2))[,4],1)
+  last_price = try(tail((getSymbols.Finam(trade_symbol,period = '1min',from=Sys.Date()-2))[,4],1),silent = T)
+  if(class(last_price)[1] == "try-error")
+    last_price = try(tail((getSymbols(trade_symbol,src='Moex',period = '1min',from=Sys.Date()-2,auto.assign = F)[,2]),1),silent = T)
+
   size_order = abs(as.numeric(change_portfolio$trade_size[i]))
   trade_side = ifelse(change_portfolio$trade_size[i]>0,'Buy','Sell')
   myorder = placeOrder(src = 'finam',
@@ -73,17 +84,21 @@ for(i in 1:nrow(change_portfolio))
 }
 
 
-# wait 1 minute and resend order
-Sys.sleep(60)
+
 # order routing logic
-my_orders = getOrders(src = 'finam',api.key = finam_token)$orders
+my_orders = getOrders(src = 'finam',api.key = finam_token,clientId = finam_account)$orders
+while(nrow(my_orders[my_orders$status=='Active',])!=0)
+{
 for(i in nrow(my_orders))
 {
   # if not executed
   if(my_orders$status[i] == 'Active')
   {
-    cancelOrder(src = 'finam',api.key = finam_token,orderId = my_orders$orderNo[i] ,clientId = finam_account)
-    last_price = tail((getSymbols.Finam(trade_symbol,period = '1min',from=Sys.Date()-2))[,4],1)
+    cancelOrder(src = 'finam',api.key = finam_token,orderId = my_orders$transactionId[i] ,clientId = finam_account)
+    last_price = try(tail((getSymbols.Finam(my_orders$securityCode[i],period = '1min',from=Sys.Date()-2))[,4],1),silent = T)
+    if(class(last_price)[1] == "try-error")
+      last_price = try(tail((getSymbols(my_orders$securityCode[i],src='Moex',period = '1min',from=Sys.Date()-2,auto.assign = F)[,2]),1),silent = T)
+
     neworder = placeOrder(src = 'finam',
                          symbol = my_orders$securityCode[i] ,
                          board = 'FUT',
@@ -94,11 +109,18 @@ for(i in nrow(my_orders))
                          clientId = finam_account)
   }
 }
+# wait 1 minute and resend order
+Sys.sleep(60)
+my_orders = getOrders(src = 'finam',api.key = finam_token,clientId = finam_account)$orders
+}
+
+
 # save day trading data
-last_portfolio = getPortfolio(src = 'Finam',api.key = finam_token,clientId = finam_account)$positions
-last_transactions = getOrders(src = 'Finam',api.key = finam_token)$orders
+last_portfolio = data.table(Sys.Date(),getPortfolio(src = 'Finam',api.key = finam_token,clientId = finam_account)$positions)
+last_transactions = data.table(Sys.Date(),getOrders(src = 'finam',api.key = finam_token,clientId = finam_account)$orders)
+last_equity = data.table(Sys.Date(),getPortfolio(src = 'Finam',api.key = finam_token,clientId = finam_account)$equity)
 
-fwrite(last_portfolio,file = paste(Sys.Date(),'positions.csv',sep = '-'))
-fwrite(last_transactions,file = paste(Sys.Date(),'transactions.csv',sep = '-'))
-
+fwrite(last_portfolio,file = 'positions.csv',append = T)
+fwrite(last_transactions,file = 'transactions.csv',append = T)
+fwrite(last_equity,file = 'equity.csv',append = T)
 
