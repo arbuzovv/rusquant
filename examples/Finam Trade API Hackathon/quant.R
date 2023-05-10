@@ -7,6 +7,7 @@ library(quantmod)
 library(PortfolioAnalytics)
 library(PerformanceAnalytics)
 devtools::install_github('arbuzovv/rusquant')
+library(rusquant)
 
 # token data for Finam Hackaton
 rusquant_token = 'AAHXE1642J'
@@ -15,14 +16,22 @@ rusquant_token = 'AAHXE1642J'
 alpha_performance = getSymbolList(src='Rusquant', api.key=rusquant_token)
 
 # choose alpha
-alpha_universe = alpha_performance[sharpe_3y>0.8 & sharpe_1y>0.8 & sharpe_1y<3  & sharpe_1m<3 & ret_1m>0]
+alpha_universe = alpha_performance[sharpe_3y>0.8 & sharpe_1y>0.8 & sharpe_1y<3  & sharpe_1m<3 & ret_1m>0 & ret_1m<0.4]
+
+# add universe of Finam for downloading data from Finam site
+getSymbolList(src = 'Finam',auto.assign = TRUE)
 
 # add alpha data
-for(i in 1:nrow(alpha_universe))
+for(i in 26:nrow(alpha_universe))
 {
   print(alpha_universe[i])
   alpha_i = getSymbols.Rusquant(alpha_universe$symbol[i],field = alpha_universe$alpha[i],from = '2010-01-01',to=Sys.Date(),api.key = rusquant_token)
-  price = getSymbols.Finam(alpha_universe$symbol[i],from = '2010-01-01',auto.assign = F)
+  price = try(getSymbols.Finam(alpha_universe$symbol[i],from = '2010-01-01',auto.assign = F),silent = TRUE)
+  if(class(price)[1] == 'try-error')
+  {
+    getSymbolList(src = 'Finam',auto.assign = TRUE)
+    price = getSymbols.Finam(alpha_universe$symbol[i],from = '2010-01-01',auto.assign = F)
+  }
   ret = ROC(price[,4])
   future_ret = lag(ret,-1)
   alpha_signal = xts(alpha_i$signal,order.by = as.Date(alpha_i$date))
