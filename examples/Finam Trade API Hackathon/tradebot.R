@@ -9,6 +9,22 @@ library(PerformanceAnalytics)
 devtools::install_github('arbuzovv/rusquant')
 
 ##################### Trading execution logic ##############################
+
+w_opt = fread('w_opt.csv')
+alpha_universe = fread('alpha_universe.csv')
+
+# get signals for current date
+for(i in 1:nrow(alpha_universe))
+{
+  alpha_i = getSymbols.Rusquant(alpha_universe$symbol[i],field = alpha_universe$alpha[i],from = '2010-01-01',to=Sys.Date(),api.key = rusquant_token)
+  if(i==1) signals = data.table(alpha_universe$symbol[i],alpha_universe$alpha[i],tail(alpha_i,1)$signal)
+  if(i!=1) signals = rbind(signals,data.table(alpha_universe$symbol[i],alpha_universe$alpha[i],tail(alpha_i,1)$signal))
+}
+
+signals$w = signals$V3*w_opt
+position_per_symbol = signals[,sum(w,na.rm = T),by='V1']
+names(position_per_symbol) = c('symbol','w')
+
 leverage = 4
 finam_token = 'set_your_finam_token'
 finam_account = 'set_your_finam_account'

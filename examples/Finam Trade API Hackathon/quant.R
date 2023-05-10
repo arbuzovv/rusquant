@@ -16,13 +16,13 @@ rusquant_token = 'AAHXE1642J'
 alpha_performance = getSymbolList(src='Rusquant', api.key=rusquant_token)
 
 # choose alpha
-alpha_universe = alpha_performance[sharpe_3y>0.8 & sharpe_1y>0.8 & sharpe_1y<3  & sharpe_1m<3 & ret_1m>0 & ret_1m<0.4]
+alpha_universe = alpha_performance[sharpe_3y>0.8 & sharpe_1y>0.8 & sharpe_1y<2  & sharpe_1m<3 & ret_1m>0 & ret_1m<0.4]
 
 # add universe of Finam for downloading data from Finam site
 getSymbolList(src = 'Finam',auto.assign = TRUE)
 
 # add alpha data
-for(i in 26:nrow(alpha_universe))
+for(i in 1:nrow(alpha_universe))
 {
   print(alpha_universe[i])
   alpha_i = getSymbols.Rusquant(alpha_universe$symbol[i],field = alpha_universe$alpha[i],from = '2010-01-01',to=Sys.Date(),api.key = rusquant_token)
@@ -49,6 +49,8 @@ for(i in 1:ncol(res)) res[is.na(res[,i]),i] <- 0
 # each alpha as asset
 alpha_universe$symbol_alpha = paste(alpha_universe$symbol,alpha_universe$alpha,sep = '_')
 names(res) = alpha_universe$symbol_alpha
+
+chart.CumReturns(res['2018/'][,1:7],legend.loc = 'topleft')
 
 # create virtual object portfolio
 pf = portfolio.spec(alpha_universe$symbol_alpha)
@@ -83,7 +85,7 @@ opt_portf <- optimize.portfolio(R=na.omit(res[time_period]), portfolio=pf,
                                    maxSR=TRUE, trace=TRUE)
 
 # chart mean-var plot
-meanvar.ef <- create.EfficientFrontier(R=na.omit(res[time_period]), portfolio=pf, type="mean-StdDev",n.portfolios = 300)
+meanvar.ef <- create.EfficientFrontier(R=na.omit(res[time_period]), portfolio=pf, type="mean-StdDev",n.portfolios = 700,search_size = 5000)
 chart.EfficientFrontier(meanvar.ef, match.col="StdDev", type="l",pch.assets=16,cex.assets = 0.7,cex.legend = 0.1)
 grid()
 points(opt_portf$objective_measures$StdDev,opt_portf$objective_measures$mean,col='blue',pch=16,cex=2)
@@ -103,20 +105,8 @@ SharpeRatio.annualized(portfolio_opt['2020/'])
 CalmarRatio(portfolio_opt['2020/'])
 
 names(portfolio_opt) = 'alpha_portfolio'
-table.CalendarReturns(na.omit(portfolio_opt), digits = 1, as.perc = TRUE, geometric = TRUE)
+# table.CalendarReturns(na.omit(4*portfolio_opt), digits = 1, as.perc = TRUE, geometric = TRUE)
 
-
-# get signals for current date
-for(i in 1:nrow(alpha_universe))
-{
-  alpha_i = getSymbols.Rusquant(alpha_universe$symbol[i],field = alpha_universe$alpha[i],from = '2010-01-01',to=Sys.Date(),api.key = rusquant_token)
-  if(i==1) signals = data.table(alpha_universe$symbol[i],alpha_universe$alpha[i],tail(alpha_i,1)$signal)
-  if(i!=1) signals = rbind(signals,data.table(alpha_universe$symbol[i],alpha_universe$alpha[i],tail(alpha_i,1)$signal))
-}
-
-signals$w = signals$V3*w_opt
-position_per_symbol = signals[,sum(w,na.rm = T),by='V1']
-names(position_per_symbol) = c('symbol','w')
-
-fwrite(x = position_per_symbol,file = 'position_per_symbol.csv')
-
+# save data for tradebot.R
+fwrite(data.table(w_opt),file = 'w_opt.csv')
+fwrite(alpha_universe,file = 'alpha_universe.csv')
