@@ -37,10 +37,6 @@ install_github("arbuzovv/rusquant")
 
 В блоге официального сайта: [rusquant](http://rusquant.ru/blog/)
 
-На персональной странице Сергея Едунова: [algorithmist.ru](http://www.algorithmist.ru/p/rusquant.html)
-
-В блоге сайта [infoption.ru](http://infoption.ru/search/rusquant)
-
 ## get data from [Finam.ru](https://www.finam.ru/profile/moex-akcii/gazprom/export/)
 
 ```R
