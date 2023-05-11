@@ -15,6 +15,18 @@
 
 Для локального запуска кода потребуется установка R и библиотеки rusquant.
 
+
+
+Для установки с CRAN достаточно найти библиотеку в списке общих пакетов
+или установить с использованием команды:
+
+``` r
+install.packages("rusquant")
+```
+
+Второй метод - это установка с Github, для этого необходима
+установленная библиотека `devtools`.
+
 ``` r
 # install.packages("devtools") # if not installed
 # options(download.file.method = "libcurl") # if problems with "Error in utils::download.file(url, path...."
