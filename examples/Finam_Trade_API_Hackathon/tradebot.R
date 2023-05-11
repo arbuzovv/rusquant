@@ -1,12 +1,12 @@
 
-
+# install.packages("rusquant") # if not installed
 library(devtools)
 library(xts)
 library(TTR)
 library(quantmod)
 library(PortfolioAnalytics)
 library(PerformanceAnalytics)
-devtools::install_github('arbuzovv/rusquant')
+library(rusquant)
 
 # set params for your account
 leverage = 4
