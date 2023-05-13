@@ -2,44 +2,13 @@
 
 ## Intro
 
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/rusquant)](https://cran.r-project.org/package=rusquant) [![CRAN_Downloads](https://cranlogs.r-pkg.org/badges/last-month/rusquant)](https://cran.r-project.org/package=rusquant) [![CRAN_Ago](https://www.r-pkg.org/badges/ago/rusquant)](https://cran.r-project.org/package=rusquant)
 
+Rusquant is a package for interaction with alternative data, trading API of different exchanges and trading terminals. Package provides access to market data for storage, analysis, algorithmic trading, strategy backtesting. Also this is data downloader from different data sources starting from close price to order book and tradelog.
 
-Rusquant is a package for interaction with alternative data, trading API of different exchanges and trading terminals.
-Package provides access to market data for storage, analysis, algorithmic trading, strategy backtesting.
-Also this is data downloader from different data sources starting from close price to order book and tradelog. 
+Current available data sources - [tinkoff.ru](https://www.tinkoff.ru), [finam.ru](https://www.finam.ru), [mfd.ru](http://mfd.ru), [alorbroker.ru](https://alorbroker.ru).
 
-
-Current available data sources - [investing.com](https://www.investing.com), [finam.ru](https://www.finam.ru), [mfd.ru](http://mfd.ru), [hs.alorbroker.ru](https://hs.alorbroker.ru), [coinmarketcap.com](https://coinmarketcap.com). 
-
-Current available cryptoexhanges - [poloniex](https://poloniex.com), [kraken](https://www.kraken.com/), [binance](https://www.binance.com/), [bittrex](https://global.bittrex.com), [cex](https://cex.io), [gate](https://www.gate.io), [gdax](https://pro.coinbase.com), [gemini](https://gemini.com), [hitbtc](https://hitbtc.com), [lykke](https://www.lykke.com), [xbtce](https://www.xbtce.com/?type=exchange). 
-
-Current available trading terminals - [IB](https://www.interactivebrokers.co.uk/), [Metatrader](https://www.metatrader5.com/), [Quik](https://arqatech.com/ru/products/quik/modules/trading-interfaces/). 
-
-## Installing in [R](https://www.r-project.org)
-
-```R
-# install.packages("devtools") # if not installed
-# options(download.file.method = "libcurl") # if problems with "Error in utils::download.file(url, path...."
-
-library(devtools)
-install_github("arbuzovv/rusquant")
-```
-
-## rus
-
-Проект rusquant – это  R пакет позволяющий взаимодействовать с общедоступными источниками финансовой информации, API различных бирж и торговых терминалов.
-
-Пакет является свободным программным обеспечением и распространяется абсолютно бесплатно.
-Официальная страница проекта на [R-forge](http://r-forge.r-project.org/projects/rusquant/)
-Для знакомства c использованием пакета можно воспользоваться [документацией](http://rusquant.ru/docs/)
-
-Практические примеры применения можно найти:
-
-В блоге официального сайта: [rusquant](http://rusquant.ru/blog/)
-
-## get data from [Finam.ru](https://www.finam.ru/profile/moex-akcii/gazprom/export/)
-
-```R
+``` r
 library(rusquant)
 getSymbolList('Finam') # download all available symbols in finam.ru 
 getSymbols('LKOH',src='Finam') # default = main market
@@ -56,21 +25,9 @@ available_etf_list = c("FXMM", "FXCN", "FXIT", "FXJP", "FXDE", "FXUS", "FXAU", "
 getSymbols(available_etf_list,src='Finam') 
 ```
 
-## get data from [Investing.com](https://www.investing.com/stock-screener/?sp=country::5|sector::a|industry::a|equityType::a%3Ceq_market_cap;1)
-```R
-library(rusquant)
-getSymbolList(src='Investing',country='UK') # download all available symbols in investing.com 
-getSymbols('LKOH',src='Investing',auto.assign = F)
-getDividends(country = 'India')
-getIPO()
-getEarnings()
-```
-
 ## get data from [Mfd.ru](http://mfd.ru/export/)
-```R
+
+``` r
 library(rusquant)
-getSymbols('LKOH',src='Mfd')
+getSymbols('Сбербанк',src='Mfd')
 ```
-
-
-
