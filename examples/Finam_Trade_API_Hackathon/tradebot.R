@@ -1,9 +1,7 @@
-
 # install.packages("rusquant") # if not installed
 library(xts)
 library(TTR)
 library(quantmod)
-library(PortfolioAnalytics)
 library(PerformanceAnalytics)
 library(rusquant)
 
@@ -33,14 +31,15 @@ for(i in 1:nrow(alpha_universe))
 }
 signals$w = signals$V3*w_opt
 print(signals)
-signals = signals[V1!='SBER']
-signals = signals[V1!='SBERP']
+# change names of stocks to names of futures
+signals[V1=='SBERP']$V1 = 'SBPR'
+signals[V1=='SBER']$V1 = 'SBRF'
+signals[V1=='GAZP']$V1 = 'GAZR'
 position_per_symbol = signals[,sum(w,na.rm = T),by='V1']
 print(position_per_symbol)
 
-
 names(position_per_symbol) = c('symbol','w')
-finam_universe = data.table(getSymbolList(src = 'Finam',api.key = finam_token))
+finam_universe = data.table(getSymbolList(src = 'finam',api.key = finam_token))
 
 #get portfolio info
 finam_portfolio = getPortfolio(src = 'Finam',api.key = finam_token,clientId = finam_account)
@@ -64,7 +63,7 @@ for(i in 1:nrow(trade_positions))
   last_price = try(tail((getSymbols(trade_symbol,src='Finam',period = '1min',from=Sys.Date()-2,auto.assign = F))[,4],1),silent = T)
   if(class(last_price)[1] == "try-error")
     last_price = try(tail((getSymbols(trade_symbol,src='Moex',period = '1min',from=Sys.Date()-2,auto.assign = F)[,2]),1),silent = T)
-  trade_positions$size[i] = abs(as.numeric(round(trade_positions$money[i]/last_price)))
+  trade_positions$size[i] = (as.numeric(round(trade_positions$money[i]/last_price)))
   trade_positions$price[i] = abs(as.numeric(last_price))
 }
 print(trade_positions)
@@ -84,22 +83,22 @@ for(i in 1:nrow(change_portfolio))
 {
   trade_symbol = change_portfolio$futures_code[i]
   last_price = try(tail((getSymbols.Finam(trade_symbol,period = '1min',
-                                  from=Sys.Date()-2))[,4],1),silent = T)
+                                          from=Sys.Date()-2))[,4],1),silent = T)
   if(class(last_price)[1] == "try-error")
     last_price = try(tail((getSymbols(trade_symbol,src='Moex',period = '1min',from=Sys.Date()-2,auto.assign = F)[,2]),1),silent = T)
   size_order = abs(as.numeric(change_portfolio$trade_size[i]))
   trade_side = ifelse(change_portfolio$trade_size[i]>0,'Buy','Sell')
   if(size_order!=0)
   {
-  myorder = placeOrder(src = 'finam',
-                       symbol = trade_symbol,
-                       board = 'FUT',
-                       action = trade_side,
-                       totalQuantity = size_order,
-                       lmtPrice = as.numeric(last_price),
-                       api.key = finam_token,
-                       clientId = finam_account)
-  print(myorder)
+    myorder = placeOrder(src = 'finam',
+                         symbol = trade_symbol,
+                         board = 'FUT',
+                         action = trade_side,
+                         totalQuantity = size_order,
+                         lmtPrice = as.numeric(last_price),
+                         api.key = finam_token,
+                         clientId = finam_account)
+    print(last_price)
   }
 }
 
@@ -109,10 +108,8 @@ for(i in 1:nrow(change_portfolio))
 my_orders = getOrders(src = 'finam',api.key = finam_token,clientId = finam_account)$orders
 print(my_orders)
 
-
-
 while(nrow(my_orders[my_orders$status=='Active',])!=0)
-  {
+{
   for(i in 1:nrow(my_orders))
   {
     # if not executed
@@ -125,17 +122,17 @@ while(nrow(my_orders[my_orders$status=='Active',])!=0)
         last_price = try(tail((getSymbols(my_orders$securityCode[i],src='Moex',period = '1min',from=Sys.Date()-2,auto.assign = F)[,2]),1),silent = T)
       change_price = 10^change_portfolio[futures_code == my_orders$securityCode[i]]$tick_size
       neworder = placeOrder(src = 'finam',
-                           symbol = my_orders$securityCode[i] ,
-                           board = 'FUT',
-                           action = my_orders$buySell[i] ,
-                           totalQuantity = my_orders$balance[i] ,
-                           lmtPrice = as.numeric(my_orders$price[i])+10*change_price*ifelse(my_orders$buySell[i] == 'Buy',1,-1),
-                           api.key = finam_token,
-                           clientId = finam_account)
+                            symbol = my_orders$securityCode[i] ,
+                            board = 'FUT',
+                            action = my_orders$buySell[i] ,
+                            totalQuantity = my_orders$balance[i] ,
+                            lmtPrice = as.numeric(my_orders$price[i])+10*change_price*ifelse(my_orders$buySell[i] == 'Buy',1,-1),
+                            api.key = finam_token,
+                            clientId = finam_account)
     }
   }
-  # wait 1 minute and resend order
-  Sys.sleep(60)
+  # wait 30 seconds and resend order
+  Sys.sleep(30)
   my_orders = getOrders(src = 'finam',api.key = finam_token,clientId = finam_account)$orders
 }
 
@@ -148,4 +145,3 @@ last_equity = data.table(Sys.Date(),getPortfolio(src = 'Finam',api.key = finam_t
 fwrite(last_portfolio,file = 'positions.csv',append = T)
 fwrite(last_transactions,file = 'transactions.csv',append = T)
 fwrite(last_equity,file = 'equity.csv',append = T)
-
