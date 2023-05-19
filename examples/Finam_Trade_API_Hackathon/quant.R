@@ -1,6 +1,13 @@
 
 
-# install.packages("rusquant") # if not installed
+install.packages("rusquant") # if not installed
+
+# packages for portfolio optimization
+install.packages("PortfolioAnalytics")
+install.packages("ROI")
+install.packages("ROI.plugin.glpk")
+install.packages("ROI.plugin.quadprog")
+
 library(devtools)
 library(xts)
 library(TTR)
@@ -16,7 +23,7 @@ rusquant_token = 'AAHXE1642J'
 alpha_performance = getSymbolList(src='Rusquant', api.key=rusquant_token)
 
 # choose alpha
-alpha_universe = alpha_performance[sharpe_3y>0.8 & sharpe_1y>0.8 & sharpe_1y<2  & sharpe_1m<3 & ret_1m>0 & ret_1m<0.4]
+alpha_universe = alpha_performance[sharpe_3y>0.8 & sharpe_1y>0.8 & sharpe_1y<3  & sharpe_1m<3 & ret_1m>0 & ret_1m<0.4 & q<0.7]
 
 # add universe of Finam for downloading data from Finam site
 getSymbolList(src = 'Finam',auto.assign = TRUE)
@@ -29,8 +36,8 @@ for(i in 1:nrow(alpha_universe))
   price = try(getSymbols.Finam(alpha_universe$symbol[i],from = '2010-01-01',auto.assign = F),silent = TRUE)
   if(class(price)[1] == 'try-error')
   {
-    getSymbolList(src = 'Finam',auto.assign = TRUE)
-    price = getSymbols.Finam(alpha_universe$symbol[i],from = '2010-01-01',auto.assign = F)
+    price = getSymbols.Moex(alpha_universe$symbol[i],from = '2010-01-01',auto.assign = F)
+    price = xts(price[,c(1,3,4,2)],order.by = as.Date(price$timestamp))
   }
   ret = ROC(price[,4])
   future_ret = lag(ret,-1)
@@ -79,13 +86,15 @@ pf <- add.constraint(portfolio=pf, type="group",
 
 # choose period with current regime of market
 time_period = '2010/'
-# run optimizer
+
+
+# run optimizer - if some error - it's mean that there are no solutions with such alpha and constraints - please change alpha filters or constraints
 opt_portf <- optimize.portfolio(R=na.omit(res[time_period]), portfolio=pf,
                                    optimize_method="ROI",
                                    maxSR=TRUE, trace=TRUE)
 
 # chart mean-var plot
-meanvar.ef <- create.EfficientFrontier(R=na.omit(res[time_period]), portfolio=pf, type="mean-StdDev",n.portfolios = 700,search_size = 5000)
+meanvar.ef <- create.EfficientFrontier(R=na.omit(res[time_period]), portfolio=pf, type="mean-StdDev",n.portfolios = 100,search_size = 500)
 chart.EfficientFrontier(meanvar.ef, match.col="StdDev", type="l",pch.assets=16,cex.assets = 0.7,cex.legend = 0.1)
 grid()
 points(opt_portf$objective_measures$StdDev,opt_portf$objective_measures$mean,col='blue',pch=16,cex=2)
