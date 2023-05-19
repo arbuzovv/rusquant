@@ -47,6 +47,7 @@ install.packages("PortfolioAnalytics")
 install.packages("ROI")
 install.packages("ROI.plugin.glpk")
 install.packages("ROI.plugin.quadprog")
+install.packages("PerformanceAnalytics")
 ```
 
 

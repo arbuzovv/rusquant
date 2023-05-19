@@ -1,16 +1,16 @@
 
 
-install.packages("rusquant") # if not installed
-
+# run  if not installed
+install.packages("rusquant")
+install.packages("PerformanceAnalytics")
 # packages for portfolio optimization
 install.packages("PortfolioAnalytics")
 install.packages("ROI")
 install.packages("ROI.plugin.glpk")
 install.packages("ROI.plugin.quadprog")
 
-library(devtools)
+
 library(xts)
-library(TTR)
 library(quantmod)
 library(PortfolioAnalytics)
 library(PerformanceAnalytics)
