@@ -237,6 +237,7 @@ getSymbolList <- function(src='poloniex',
   {
     fr <- readLines(con = tmp, warn = FALSE,encoding = 'UTF-8')
     unlink(tmp)
+    fr <- sapply(fr, function(x)iconv(x, "WINDOWS-1251", "UTF8"))
     EmitentIds <- sub("var .*?= \\[", "", fr[1])
     EmitentIds <- sub("\\];", "", EmitentIds)
     EmitentIds <- strsplit(EmitentIds, ",")
