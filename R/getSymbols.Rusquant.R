@@ -38,9 +38,10 @@
            ...)
 {
   Symbol.name = Symbols[[1]]
-  rusquant.url <- 'https://api.rusquant.ru/alpha'
+  rusquant.url <- "https://api.rusquant.io/alpha"
   rusquant.params = list('symbol' = Symbol.name,
                          'alpha'=field,
+                         'market'=market,
                          'from' = from,
                          'to' = to,
                          'token' = api.key)
