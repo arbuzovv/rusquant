@@ -212,7 +212,7 @@ getSymbolList <- function(src='poloniex',
   if (src == "finam"  & api.key=='')
   {
     tmp <- tempfile()
-    download.file(downloadUrl,destfile = tmp,headers = headers)
+    download.file(downloadUrl, destfile = tmp, mode = "wb",headers = headers)
   }
 
   if (src == "investing")
