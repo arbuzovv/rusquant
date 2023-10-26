@@ -7,7 +7,7 @@
 Rusquant is a package for interaction with alternative data, trading API of different exchanges and brokers. Package provides access to market data for storage, analysis, algorithmic trading, strategy backtesting. Also this is data downloader from different data sources starting from close price to order book and tradelog.
 
 Current available brokers - [tinkoff.ru](https://www.tinkoff.ru), [finam.ru](https://www.finam.ru), [alorbroker.ru](https://alorbroker.ru).
-Current available datasources - previous brokers + [MOEX](https://www.moex.ru), [MFD](https://www.mfd.ru), [Poloniex](https://www.poloniex.com),[MarketWatch](https://www.marketwatch.com), [Investing](https://www.investing.com)
+Current available datasources - previous brokers + [MOEX](https://www.moex.com),  [MFD.RU](https://www.mfd.ru),  [Poloniex](https://www.poloniex.com),  [MarketWatch](https://www.marketwatch.com),  [Investing](https://www.investing.com)
 
 ### Supporting rusquant development
 
