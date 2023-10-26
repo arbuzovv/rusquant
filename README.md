@@ -50,14 +50,14 @@ getSymbols('LKOH',src='Finam',period='15min') # 15 min bar
 getSymbols.Moex('SBER',period = '1min',from=Sys.Date()-20) # 1 min bar 
 ```
 
-## get data from [Mfd.ru](http://mfd.ru/export/)
+### Get data from [Mfd.ru](https://mfd.ru/export/)
 
 ``` r
 getSymbolList('Mfd') # see the availible assets
 getSymbols('Сбербанк',src='Mfd')
 ```
 
-## get fundamental data from [Investing](http://investing.com)
+### Get fundamental data from [Investing](https://investing.com)
 
 ``` r
 getEarnings(from = Sys.Date(),to = Sys.Date()+3,country='Belgium')
@@ -67,7 +67,7 @@ getDividends(from = Sys.Date(),to = Sys.Date()+2,country = "Australia")
 getDividends(from = '2023-08-01',to = '2023-08-05',country = 'United States')
 ```
 
-## live trading using brokers account [Finam](http://finam.ru)
+### Live trading using broker account [Finam](https://finam.ru)
 
 ``` r
 finam_token = 'mytoken'
