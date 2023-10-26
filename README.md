@@ -4,9 +4,10 @@
 
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/rusquant)](https://cran.r-project.org/package=rusquant) [![CRAN_Downloads](https://cranlogs.r-pkg.org/badges/last-month/rusquant)](https://cran.r-project.org/package=rusquant) [![CRAN_Ago](https://www.r-pkg.org/badges/ago/rusquant)](https://cran.r-project.org/package=rusquant)
 
-Rusquant is a package for interaction with alternative data, trading API of different exchanges and trading terminals. Package provides access to market data for storage, analysis, algorithmic trading, strategy backtesting. Also this is data downloader from different data sources starting from close price to order book and tradelog.
+Rusquant is a package for interaction with alternative data, trading API of different exchanges and brokers. Package provides access to market data for storage, analysis, algorithmic trading, strategy backtesting. Also this is data downloader from different data sources starting from close price to order book and tradelog.
 
-Current available data sources - [tinkoff.ru](https://www.tinkoff.ru), [finam.ru](https://www.finam.ru), [mfd.ru](http://mfd.ru), [alorbroker.ru](https://alorbroker.ru).
+Current available brokers - [tinkoff.ru](https://www.tinkoff.ru), [finam.ru](https://www.finam.ru), [alorbroker.ru](https://alorbroker.ru).
+Current available datasources - previous brokers + [MOEX](https://www.moex.ru), [MFD](https://www.mfd.ru), [Poloniex](https://www.poloniex.com),[MarketWatch](https://www.marketwatch.com), [Investing](https://www.investing.com)
 
 ### Supporting rusquant development
 
