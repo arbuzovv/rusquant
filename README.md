@@ -1,4 +1,4 @@
-# rusquant
+# Rusquant
 
 ## Intro
 
@@ -9,11 +9,11 @@ Rusquant is a package for interaction with alternative data, trading API of diff
 Current available brokers - [tinkoff.ru](https://www.tinkoff.ru), [finam.ru](https://www.finam.ru), [alorbroker.ru](https://alorbroker.ru).
 Current available datasources - previous brokers + [MOEX](https://www.moex.com),  [MFD.RU](https://www.mfd.ru),  [Poloniex](https://www.poloniex.com),  [MarketWatch](https://www.marketwatch.com),  [Investing](https://www.investing.com)
 
-### Supporting rusquant development
+## Supporting rusquant development
 
 If you are interested in supporting the ongoing development and maintenance of rusquant, please consider [becoming a sponsor](https://boosty.to/rusquant/donate).
 
-## Installation
+### Installation
 
 The current release is available on [CRAN](https://CRAN.R-project.org/package=rusquant),
 which you can install via:
