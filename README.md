@@ -40,20 +40,62 @@ function: `getSymbols()`. For example:
 library(rusquant)
 getSymbolList('Finam') # download all available symbols in finam.ru 
 getSymbols('LKOH',src='Finam') # default = main market
-getSymbols('LKOH',src = 'Finam',market=1) # main market
-getSymbols('LKOH',src = 'Finam',market=8) # ADR of LKOH, from market id from loadSymbolList
+getSymbols('LKOH',src = 'Finam') # main market
+getSymbols.Moex('SBER')
 
 # type period
 getSymbols('LKOH',src='Finam',period='day') # day bars - default parameter
 getSymbols('LKOH',src='Finam',period='5min') # 5 min bar 
-getSymbols('LKOH',src='Finam',period='15min') # 15 min bar 
+getSymbols('LKOH',src='Finam',period='15min') # 15 min bar
+getSymbols.Moex('SBER',period = '1min',from=Sys.Date()-20) # 1 min bar 
 ```
 
 ## get data from [Mfd.ru](http://mfd.ru/export/)
 
 ``` r
-library(rusquant)
+getSymbolList('Mfd') # see the availible assets
 getSymbols('Сбербанк',src='Mfd')
+```
+
+## get fundamental data from [Investing](http://investing.com)
+
+``` r
+getEarnings(from = Sys.Date(),to = Sys.Date()+3,country='Belgium')
+getEconomic(from = Sys.Date() - 10, to = Sys.Date(), country = "United States")
+getIPO(from='2023-01-23',to='2023-01-25')
+getDividends(from = Sys.Date(),to = Sys.Date()+2,country = "Australia")
+getDividends(from = '2023-08-01',to = '2023-08-05',country = 'United States')
+```
+
+## live trading using brokers account [Finam](http://finam.ru)
+
+``` r
+finam_token = 'mytoken'
+finam_account = 'accountid'
+
+#get portfolio info
+finam_portfolio = getPortfolio(src = 'Finam',api.key = finam_token,clientId = finam_account)
+current_balance = finam_portfolio$equity
+finam_universe = data.table(getSymbolList(src = 'Finam',api.key = finam_token))
+#change positions
+trade_symbol = 'SBER'
+last_price = try(tail((getSymbols.Finam(trade_symbol,period = '1min',from=Sys.Date()-2))[,4],1),silent = T)
+size_order = 1
+trade_side = ifelse(size_order>0,'Buy','Sell')
+board = 'TQBR'
+
+myorder = placeOrder(src = 'finam',
+                     symbol = trade_symbol,
+                     board = board,
+                     action = trade_side,
+                     totalQuantity = size_order,
+                     lmtPrice = as.numeric(last_price),
+                     api.key = finam_token,
+                     clientId = finam_account)
+print(myorder)
+
+my_orders_status = getOrders(src = 'finam',api.key = finam_token,clientId = finam_account)$orders
+print(my_orders_status)
 ```
 
 ### Author
