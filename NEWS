@@ -1,3 +1,14 @@
+# rusquant 1.0.3
+
+* add AlgoPack dataset from MOEX exchange
+* add Comon data from Finam copytrading platform
+
+# rusquant 1.0.2
+
+update docs and examples in more robust style
+Fix errors while uploading data from investing using functions getDividends,getEarnings,getEconomic
+fix problem UTF-8 in getSymbolLis
+
 # rusquant 1.0.1
 
 * add trading API from Tinkoff, Alor, Finam
