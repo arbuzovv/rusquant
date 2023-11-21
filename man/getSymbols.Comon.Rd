@@ -2,7 +2,7 @@
 % Please edit documentation in R/getSymbols.Comon.R
 \name{getSymbols.Comon}
 \alias{getSymbols.Comon}
-\title{Download Alor data}
+\title{Download data from Comon copytrading platform}
 \usage{
 getSymbols.Comon(
   Symbols,
@@ -18,19 +18,19 @@ getSymbols.Comon(
 
 \item{env}{environment where to create the downloaded data object.}
 
-\item{period}{a character string indicating the frequency of the data to download. Possible values are '1min', '5min', 'hour', 'day', 'week', and 'month'.}
+\item{period}{a character string indicating the frequency of the data to download. Possible values are 'day'.}
 
 \item{verbose}{a logical indicating whether to print the response details or not.}
 
 \item{auto.assign}{a logical indicating whether to automatically assign the downloaded data to the global environment.}
 
-\item{...}{additional arguments passed to getSymbols.Alor}
+\item{...}{additional arguments passed to getSymbols.Comon}
 }
 \value{
 returns an data.table object containing financial data
 }
 \description{
-Download historical market data from Alor for a given symbol and time range.
+Download historical market data from Comon for a given trader id
 }
 \note{
 Not for the faint of heart. All profits and losses related are yours and yours alone. If you don't like it, write it yourself.
