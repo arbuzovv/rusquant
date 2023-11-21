@@ -36,6 +36,21 @@ getSymbolList <- function(src='poloniex',
 {
   src <- tolower(src)
 
+  if(src == 'comon')
+  {
+
+    rawdata_m = fromJSON('https://www.comon.ru/api/v1/strategies?page=1&pageSize=30000')$data
+    result <-paste('symbol_list',toupper(gsub('\\^','',src)),sep='_')
+    if(auto.assign)
+    {
+      assign(result, rawdata_m,env)
+      return(result)
+    }
+    return(rawdata_m)
+  }
+
+
+
   if(src == 'rusquant')
   {
     rusquant.url <- 'https://api.rusquant.io/performance'
