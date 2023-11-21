@@ -30,7 +30,7 @@ getSymbols.Algopack <- function(Symbols,
   for(i in 1:length(Symbols))
   {
   Symbols.name = Symbols[i]
-  algopack.downloadUrl <- paste0('https://iss.moex.com/iss/datashop/algopack/eq/',type[3],'/',tolower(Symbols.name),'.json')
+  algopack.downloadUrl <- paste0('https://iss.moex.com/iss/datashop/algopack/eq/',type,'/',tolower(Symbols.name),'.json')
   paginate = TRUE
   data_result = data.table()
   pagination_page = 0
