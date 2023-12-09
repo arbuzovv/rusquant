@@ -12,14 +12,14 @@ If you are interested in supporting the ongoing development and maintenance of r
 
 ### Installation
 
-The current release is available on [CRAN](https://CRAN.R-project.org/package=rusquant),
+The current release  (1.0.2) is available on [CRAN](https://CRAN.R-project.org/package=rusquant),
 which you can install via:
 
 ```r
 install.packages("rusquant")
 ```
 
-To install the development version, you need to clone the repository and build
+To install the development version (1.0.4), you need to clone the repository and build
 from source, or run one of:
 
 ```r
