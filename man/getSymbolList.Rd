@@ -31,7 +31,7 @@ The default is FALSE.}
 The default is an empty string.}
 
 \item{type}{character indicating the type of financial instruments to retrieve.
-Only applicable for the "tinkoff" source. Possible values are "Bonds", "Currencies", "Etfs", "Futures", "Options", and "Shares".}
+Applicable for the "tinkoff" source and "gigapack". Possible values are "Bonds", "Currencies", "Etfs", "Futures", "Options", and "Shares".}
 
 \item{env}{The environment where the data should be assigned. Defaults to the global environment.}
 

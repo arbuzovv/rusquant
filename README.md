@@ -4,7 +4,7 @@
 Rusquant is a package for interaction with alternative data, trading API of different exchanges and brokers. Package provides access to market data for storage, analysis, algorithmic trading, strategy backtesting. Also this is data downloader from different data sources starting from close price to order book and tradelog.
 
 Current available brokers - [tinkoff.ru](https://www.tinkoff.ru), [finam.ru](https://www.finam.ru), [alorbroker.ru](https://alorbroker.ru).
-Current available datasources - previous brokers + [MOEX](https://www.moex.com),  [MFD.RU](https://www.mfd.ru),  [Poloniex](https://www.poloniex.com),  [MarketWatch](https://www.marketwatch.com),  [Investing](https://www.investing.com)
+Current available datasources - previous brokers + [MOEX](https://www.moex.com),  [MFD.RU](https://www.mfd.ru),  [Poloniex](https://www.poloniex.com),  [MarketWatch](https://www.marketwatch.com),  [Investing](https://www.investing.com), [AlgoPack](https://www.moex.com/ru/algopack)
 
 ### Supporting rusquant development
 
@@ -62,6 +62,14 @@ getEconomic(from = Sys.Date() - 10, to = Sys.Date(), country = "United States")
 getIPO(from='2023-01-23',to='2023-01-25')
 getDividends(from = Sys.Date(),to = Sys.Date()+2,country = "Australia")
 getDividends(from = '2023-08-01',to = '2023-08-05',country = 'United States')
+```
+
+### Get microstructure data from [AlgoPack](https://www.moex.com/ru/algopack)
+
+``` r
+getSymbols.Algopack('SBER',from = '2023-10-24',to='2023-11-04')
+getSymbols.Algopack('ROSN',from = '2023-10-24',to='2023-11-04',type = 'obstats')
+
 ```
 
 ### Live trading using broker account [Finam](https://finam.ru)

@@ -1,3 +1,7 @@
+# rusquant 1.0.4
+
+* add GigaPack dataset from Algo exchange
+
 # rusquant 1.0.3
 
 * add AlgoPack dataset from MOEX exchange
@@ -5,9 +9,9 @@
 
 # rusquant 1.0.2
 
-update docs and examples in more robust style
-Fix errors while uploading data from investing using functions getDividends,getEarnings,getEconomic
-fix problem UTF-8 in getSymbolLis
+* update docs and examples in more robust style
+* Fix errors while uploading data from investing using functions getDividends,getEarnings,getEconomic
+* fix problem UTF-8 in getSymbolLis
 
 # rusquant 1.0.1
 

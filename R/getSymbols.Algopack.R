@@ -49,12 +49,7 @@ getSymbols.Algopack <- function(Symbols,
       if(pagination_page >json_response$data.cursor$data[1,2])
         {
         paginate = FALSE
-        if(nrow(data_result)!=0) 
-          {
-          setnames(data_result,json_response$data$columns)
-          cols <- colnames(data_result)[4:(ncol(data_result)-1)]
-          data_result[,(cols) := lapply(.SD, as.numeric), .SDcols = cols] 
-          }
+        if(nrow(data_result)!=0) setnames(data_result,json_response$data$columns)
         }
     }
     if(response$status_code!=200)
