@@ -8,6 +8,8 @@
 #' @param to a character string indicating the end date of the data to download, in YYYY-MM-DD format.
 #' @param verbose a logical indicating whether to print the response details or not.
 #' @param type a character string indicating the AlgoPack type possible values are c('tradestats','orderstats','obstats'), default 'tradestats'.
+#' @param login a character string with login from ISS Moex
+#' @param password a character string with password from ISS Moex
 #' @param auto.assign a logical indicating whether to automatically assign the downloaded data to the global environment.
 #' @param ... additional arguments passed to getSymbols.AlgoPack
 #' @return returns an data.table object containing financial data
@@ -24,6 +26,8 @@ getSymbols.Algopack <- function(Symbols,
                             to=Sys.Date(),
                             verbose=TRUE,
                             type = 'tradestats',
+                            login = 'user@email.com',
+                            password = 'mypassword',
                             auto.assign=FALSE,
                             ...)
 {
@@ -34,12 +38,20 @@ getSymbols.Algopack <- function(Symbols,
   paginate = TRUE
   data_result = data.table()
   pagination_page = 0
+  url_auth = 'https://passport.moex.com/authenticate'
+  headers = c('Authorization' =  paste0('Basic ',base64encode(charToRaw(paste(login,password,sep = ':')))))
+  auth_response <- GET(url_auth,add_headers(headers))
+  if(auth_response$status_code!=200)
+    return('authenticate to ISS Moex using login/password ')
+  cookie_value = content(auth_response, "text", encoding = "UTF-8")
+  headers = c('Cookie' =  paste0('MicexPassportCert=',cookie_value))
+
   while(paginate)
   {
     algopack.params = list('from'=from,
                            'till'=to,
                            start=pagination_page)
-    response <- GET(algopack.downloadUrl, encode = "json",query = algopack.params)
+    response <- GET(algopack.downloadUrl, encode = "json",query = algopack.params,add_headers(headers))
     if(response$status_code==200)
     {
       json_response <- content(response, "text", encoding = "UTF-8")
@@ -55,7 +67,8 @@ getSymbols.Algopack <- function(Symbols,
     if(response$status_code!=200)
       if(verbose) return(content(response, as = "parsed"))
   }
-
+  cols <- colnames(data_result)[-c(1:3,ncol(data_result))]
+  data_result[ , (cols) := lapply(.SD, as.numeric), .SDcols = cols]
   if(auto.assign){
     assign(Symbols[[i]], data_result, env)
   }

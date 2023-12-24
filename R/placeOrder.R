@@ -37,6 +37,7 @@
 #' @import stringr
 #' @import utils
 #' @import rvest
+#' @import base64enc
 #' @importFrom jose jwt_split
 #' @importFrom stats runif
 #' @importFrom xts xts

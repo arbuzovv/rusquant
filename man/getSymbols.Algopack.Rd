@@ -11,6 +11,8 @@ getSymbols.Algopack(
   to = Sys.Date(),
   verbose = TRUE,
   type = "tradestats",
+  login = "user@email.com",
+  password = "mypassword",
   auto.assign = FALSE,
   ...
 )
@@ -27,6 +29,10 @@ getSymbols.Algopack(
 \item{verbose}{a logical indicating whether to print the response details or not.}
 
 \item{type}{a character string indicating the AlgoPack type possible values are c('tradestats','orderstats','obstats'), default 'tradestats'.}
+
+\item{login}{a character string with login from ISS Moex}
+
+\item{password}{a character string with password from ISS Moex}
 
 \item{auto.assign}{a logical indicating whether to automatically assign the downloaded data to the global environment.}
 

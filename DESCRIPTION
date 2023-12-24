@@ -1,7 +1,7 @@
 Package: rusquant
 Type: Package
 Title: Quantitative Trading Framework
-Version: 1.0.4
+Version: 1.0.5
 Date: 2023-12-04
 Author: Vyacheslav Arbuzov[cph, cre, aut], Sergey Edunov[aut]
 Depends: quantmod,data.table,jsonlite,httr,xts
