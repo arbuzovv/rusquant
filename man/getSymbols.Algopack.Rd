@@ -48,8 +48,8 @@ Download historical market data from AlgoPack  for a given symbol and time range
 Not for the faint of heart. All profits and losses related are yours and yours alone. If you don't like it, write it yourself.
 }
 \examples{
-getSymbols.Algopack('SBER',from = '2023-10-24',to='2023-11-04')
-getSymbols('SBER',src='Algopack')
+getSymbols.Algopack('SBER',from = '2023-10-24',to='2023-11-04',login = 'my-email.com',password = 'mypassword')
+getSymbols('SBER',src='Algopack',login = 'my-email.com',password = 'mypassword')
 }
 \author{
 Vyacheslav Arbuzov
