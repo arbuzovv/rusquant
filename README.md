@@ -12,7 +12,7 @@ If you are interested in supporting the ongoing development and maintenance of r
 
 ### Installation
 
-The current release  (1.0.2) is available on [CRAN](https://CRAN.R-project.org/package=rusquant),
+The current release  (1.0.5) is available on [CRAN](https://CRAN.R-project.org/package=rusquant),
 which you can install via:
 
 ```r
