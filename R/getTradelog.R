@@ -12,7 +12,7 @@
 #' @param index.class Character scalar, specifying the class of the index column. The supported classes are: "Date" and "POSIXct" (default = "Date").
 #' @param verbose Logical scalar, specifying whether to print verbose output (default = FALSE).
 #' @param auto.assign Logical scalar, specifying whether to automatically assign the resulting object to the global environment (default = TRUE).
-#' @param market A character string specifying type of market
+#' @param market A character string specifying type of market. 'shares' or 'forts'
 #' @param board A character string specifying type of board
 #' @param env environment where data is stored
 #'
@@ -22,6 +22,7 @@
 #' @examples
 #' getTradelog('BTC_USDT', src = 'poloniex')
 #' getTradelog('SBER', src = 'moex')
+#' getTradelog('SiH5', src = 'moex',market='forts')
 #' @export
 
 "getTradelog" <- function
@@ -36,14 +37,17 @@
         src <- tolower(src)
         if(src == 'moex')
         {
-          full_url <- sprintf('https://iss.moex.com/iss/engines/stock/markets/%s/boards/%s/securities/%s/trades.json?tradeno=%s',
-                              market, board, Symbols,tradeno)
+          engine = ifelse(market == 'shares','stock','futures')
+          if(market == 'forts') board = 'rfud'
+          full_url <- sprintf('https://iss.moex.com/iss/engines/%s/markets/%s/boards/%s/securities/%s/trades.json?tradeno=%s',
+                              engine,market, board, Symbols,tradeno)
           login <- Sys.getenv('MOEX_DATASHOP_LOGIN')
           password <- Sys.getenv('MOEX_DATASHOP_PASSWORD')
           cookie_value <- Sys.getenv('MOEX_DATASHOP_COOKIE')
           if(login == '' & password=='')
             return('authenticate to ISS Moex using login/password ')
           headers = c('Cookie' =  paste0('MicexPassportCert=',cookie_value))
+          if(full_url==T) print(full_url)
           response <- GET(full_url, encode = "json",add_headers(headers))
           if(response$status_code==200)
           {

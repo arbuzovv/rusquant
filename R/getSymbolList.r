@@ -14,7 +14,7 @@
 #' @param api.key character indicating the API key to be used for accessing the source.
 #'   The default is an empty string.
 #' @param type character indicating the type of financial instruments to retrieve.
-#'   Applicable for the "tinkoff" source and "gigapack". Possible values are "Bonds", "Currencies", "Etfs", "Futures", "Options", and "Shares".
+#'   Applicable for the "tinkoff", "gigapack","moex". Possible values are "Bonds", "Currencies", "Etfs", "Futures", "Options", and "Shares".
 #' @param env The environment where the data should be assigned. Defaults to the global environment.
 #' @param user_agent The special headers for parsing
 #'
@@ -23,6 +23,8 @@
 #' @author Vyacheslav Arbuzov
 #' @examples
 #' getSymbolList()
+#' #getSymbolList(src='moex')
+#' #getSymbolList(src='moex',type='Forts')
 #' @export
 
 getSymbolList <- function(src='poloniex',
@@ -38,7 +40,11 @@ getSymbolList <- function(src='poloniex',
 
   if(src == 'moex')
   {
-    data_moex = fromJSON('https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities.json')
+
+    full_url =  ifelse(type == 'Shares','https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities.json',
+             'https://iss.moex.com/iss/engines/futures/markets/forts/boards/rfud/securities.json')
+    data_moex = fromJSON(full_url)
+
     rawdata_m = data.table(data_moex$securities$data)
     names(rawdata_m) = data_moex$securities$columns
     result <-paste('symbol_list',toupper(gsub('\\^','',src)),sep='_')

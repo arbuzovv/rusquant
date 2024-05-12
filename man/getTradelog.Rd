@@ -37,7 +37,7 @@ getTradelog(
 
 \item{tradeno}{First number of trade}
 
-\item{market}{A character string specifying type of market}
+\item{market}{A character string specifying type of market. 'shares' or 'forts'}
 
 \item{board}{A character string specifying type of board}
 
@@ -59,6 +59,7 @@ Not for the faint of heart. All profits and losses related are yours and yours a
 \examples{
 getTradelog('BTC_USDT', src = 'poloniex')
 getTradelog('SBER', src = 'moex')
+getTradelog('SiH5', src = 'moex',market='forts')
 }
 \author{
 Vyacheslav Arbuzov

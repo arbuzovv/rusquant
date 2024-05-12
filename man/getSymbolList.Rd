@@ -31,7 +31,7 @@ The default is FALSE.}
 The default is an empty string.}
 
 \item{type}{character indicating the type of financial instruments to retrieve.
-Applicable for the "tinkoff" source and "gigapack". Possible values are "Bonds", "Currencies", "Etfs", "Futures", "Options", and "Shares".}
+Applicable for the "tinkoff", "gigapack","moex". Possible values are "Bonds", "Currencies", "Etfs", "Futures", "Options", and "Shares".}
 
 \item{env}{The environment where the data should be assigned. Defaults to the global environment.}
 
@@ -50,6 +50,8 @@ Not for the faint of heart. All profits and losses related are yours and yours a
 }
 \examples{
 getSymbolList()
+#getSymbolList(src='moex')
+#getSymbolList(src='moex',type='Forts')
 }
 \author{
 Vyacheslav Arbuzov
