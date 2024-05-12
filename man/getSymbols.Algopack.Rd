@@ -5,14 +5,14 @@
 \title{Download AlgoPack data from MOEX}
 \usage{
 getSymbols.Algopack(
-  Symbols,
+  Symbols = "",
   env = globalenv(),
   from = Sys.Date() - 30,
   to = Sys.Date(),
-  verbose = TRUE,
+  date = Sys.Date(),
+  verbose = FALSE,
   type = "tradestats",
-  login = "user@email.com",
-  password = "mypassword",
+  market = "eq",
   auto.assign = FALSE,
   ...
 )
@@ -26,13 +26,13 @@ getSymbols.Algopack(
 
 \item{to}{a character string indicating the end date of the data to download, in YYYY-MM-DD format.}
 
+\item{date}{a character string indicating the date of the data to download, in YYYY-MM-DD format.}
+
 \item{verbose}{a logical indicating whether to print the response details or not.}
 
-\item{type}{a character string indicating the AlgoPack type possible values are c('tradestats','orderstats','obstats'), default 'tradestats'.}
+\item{type}{a character string indicating the AlgoPack type possible values are c('tradestats','orderstats','obstats','hi2','oi'), default 'tradestats'.}
 
-\item{login}{a character string with login from ISS Moex}
-
-\item{password}{a character string with password from ISS Moex}
+\item{market}{a character string indicating the market type possible values are c('eq','fo','fx'), default 'eq'.}
 
 \item{auto.assign}{a logical indicating whether to automatically assign the downloaded data to the global environment.}
 
@@ -48,8 +48,19 @@ Download historical market data from AlgoPack  for a given symbol and time range
 Not for the faint of heart. All profits and losses related are yours and yours alone. If you don't like it, write it yourself.
 }
 \examples{
-getSymbols.Algopack('SBER',from = '2023-10-24',to='2023-11-04',login = 'my-email.com',password = 'mypassword')
-getSymbols('SBER',src='Algopack',login = 'my-email.com',password = 'mypassword')
+getSymbols.Algopack('SBER',from = '2023-10-24',to='2023-11-04')
+# open interest for available futures
+getSymbols.Algopack(date = '2024-05-10',type = 'oi')
+# open interest for Si futures
+getSymbols.Algopack(Symbols = 'Si',type = 'oi')
+# market concentration for available stocks
+#getSymbols.Algopack(date = '2024-05-10',type = 'hi2')
+# market concentration for available fx
+#getSymbols.Algopack(date = '2024-05-10',type = 'hi2',market='fx')
+# market concentration for available futures
+#getSymbols.Algopack(date = '2024-05-10',type = 'hi2',market='fo')
+# market concentration for CNYRUB_TOM
+#getSymbols.Algopack(Symbols = 'CNYRUB_TOM',type = 'hi2',market='fx')
 }
 \author{
 Vyacheslav Arbuzov

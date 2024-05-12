@@ -8,6 +8,8 @@
 #' @param adjust A logical value indicating whether to adjust timestamps to match the system timezone. Defaults to FALSE.
 #' @param verbose A logical value indicating whether to print detailed messages during the function's execution. Defaults to FALSE.
 #' @param auto.assign A logical value indicating whether to automatically assign the resulting object to the current environment. Defaults to TRUE.
+#' @param market A character string specifying type of market
+#' @param board A character string specifying type of board
 #' @param api.key A character string specifying the API key to use when retrieving data from Alor or Tinkoff. Defaults to "".
 #' @param env environment where the data will be assigned
 #'
@@ -18,6 +20,7 @@
 #' @examples
 #' getOrderbook('USDTGBP', src = 'kraken')
 #' getOrderbook('BTC_USDT', src = 'poloniex')
+#' getOrderbook('SBER', src = 'moex')
 #' @export
 
 "getOrderbook" <- function #S3 function (Poloniex is a class of first argument)
@@ -27,12 +30,45 @@
  adjust=FALSE,
  verbose=FALSE,
  auto.assign=TRUE,
+ market = 'shares',
+ board = 'tqbr',
  api.key = '',
  env=globalenv())
 {
 
 		src <- tolower(src)
 		Price <- Volume <- isAsk <- NULL
+
+
+		## choose exchange
+		if(src == 'moex')
+		{
+		  full_url <- sprintf('https://iss.moex.com/iss/engines/stock/markets/%s/boards/%s/securities/%s/orderbook.json',
+		                 market, board, Symbols)
+		  login <- Sys.getenv('MOEX_DATASHOP_LOGIN')
+		  password <- Sys.getenv('MOEX_DATASHOP_PASSWORD')
+		  cookie_value <- Sys.getenv('MOEX_DATASHOP_COOKIE')
+		  if(login == '' & password=='')
+		    return('authenticate to ISS Moex using login/password ')
+		  headers = c('Cookie' =  paste0('MicexPassportCert=',cookie_value))
+		  response <- GET(full_url, encode = "json",add_headers(headers))
+		  if(response$status_code==200)
+		  {
+		    json_response <- content(response, "text", encoding = "UTF-8")
+		    json_response <- fromJSON(json_response)
+		    data_result = data.table(json_response$orderbook$data)
+		    if(nrow(data_result)>0)
+		    {
+		      setnames(data_result,json_response$orderbook$columns)
+		      for(col in c('PRICE', 'QUANTITY','SEQNUM'))
+		        set(data_result, j = col, value = as.numeric(data_result[[col]]))
+		    }
+		    return(data_result)
+		  }
+		  if(response$status_code!=200)
+		    if(verbose) return(content(response, as = "parsed"))
+		}
+
 	  ## choose exchange
 		if(src == 'tinkoff')
 		{

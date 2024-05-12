@@ -1,11 +1,11 @@
 Package: rusquant
 Type: Package
 Title: Quantitative Trading Framework
-Version: 1.0.5
-Date: 2023-12-04
+Version: 1.1.0
+Date: 2024-05-12
 Author: Vyacheslav Arbuzov[cph, cre, aut], Sergey Edunov[aut]
 Depends: quantmod,data.table,jsonlite,httr,xts
-Imports: XML,stringr,jose,stats,rvest
+Imports: XML,stringr,jose,stats,rvest,base64enc
 Maintainer: Vyacheslav Arbuzov <arbuzov1989@gmail.com>
 Description: Collection of functions to retrieve financial data from various sources, including brokerage and exchange platforms, financial websites, and data providers. Includes functions to retrieve account information, portfolio information, and place/cancel orders from different brokers. Additionally, allows users to download historical data such as earnings, dividends, stock splits.
 LazyLoad: yes

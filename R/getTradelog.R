@@ -6,11 +6,14 @@
 #' @param depth Numeric scalar, specifying the number of trades to retrieve (default = 500).
 #' @param src Character scalar, specifying the exchange to retrieve trade logs from. The supported exchanges are: "tinkoff", "alor", "poloniex", "kraken", "binance", "bttrex", "cex", "gate", "gatecoin", "gdax", "gemini", "hitbtc", "liqui", and "lykke".
 #' @param api.key Character scalar, specifying the API key (if required by the exchange).
+#' @param tradeno First number of trade
 #' @param adjust Logical scalar, specifying whether to adjust timestamps for time zones (default = FALSE).
 #' @param return.class Character scalar, specifying the class of the returned object. The supported classes are: "data.table", "data.frame", and "xts" (default = "data.table").
 #' @param index.class Character scalar, specifying the class of the index column. The supported classes are: "Date" and "POSIXct" (default = "Date").
 #' @param verbose Logical scalar, specifying whether to print verbose output (default = FALSE).
 #' @param auto.assign Logical scalar, specifying whether to automatically assign the resulting object to the global environment (default = TRUE).
+#' @param market A character string specifying type of market
+#' @param board A character string specifying type of board
 #' @param env environment where data is stored
 #'
 #' @return A data table or data frame with the retrieved trade logs, depending on the value of the \code{return.class} argument.
@@ -18,15 +21,51 @@
 #' @author Vyacheslav Arbuzov
 #' @examples
 #' getTradelog('BTC_USDT', src = 'poloniex')
+#' getTradelog('SBER', src = 'moex')
 #' @export
 
 "getTradelog" <- function
 (Symbols,depth=500,src='poloniex',api.key = '',
  adjust=FALSE,return.class='data.table',index.class='Date',
+ tradeno=1,
+ market = 'shares',
+ board = 'tqbr',
  verbose=FALSE,
  auto.assign=TRUE,env=globalenv())
 {
         src <- tolower(src)
+        if(src == 'moex')
+        {
+          full_url <- sprintf('https://iss.moex.com/iss/engines/stock/markets/%s/boards/%s/securities/%s/trades.json?tradeno=%s',
+                              market, board, Symbols,tradeno)
+          login <- Sys.getenv('MOEX_DATASHOP_LOGIN')
+          password <- Sys.getenv('MOEX_DATASHOP_PASSWORD')
+          cookie_value <- Sys.getenv('MOEX_DATASHOP_COOKIE')
+          if(login == '' & password=='')
+            return('authenticate to ISS Moex using login/password ')
+          headers = c('Cookie' =  paste0('MicexPassportCert=',cookie_value))
+          response <- GET(full_url, encode = "json",add_headers(headers))
+          if(response$status_code==200)
+          {
+            json_response <- content(response, "text", encoding = "UTF-8")
+            json_response <- fromJSON(json_response)
+            data_result = data.table(json_response$trades$data)
+            if(nrow(data_result)>0)
+            {
+              setnames(data_result,json_response$trades$columns)
+              for(col in c('PRICE', 'QUANTITY','TRADENO','TRADINGSESSION','DECIMALS','VALUE','TRADETIME_GRP'))
+                set(data_result, j = col, value = as.numeric(data_result[[col]]))
+            }
+            return(data_result)
+          }
+          if(response$status_code!=200)
+            if(verbose) return(content(response, as = "parsed"))
+        }
+
+
+
+
+
         ## choose exchange
         if (src == "tinkoff")
         {

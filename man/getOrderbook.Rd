@@ -11,6 +11,8 @@ getOrderbook(
   adjust = FALSE,
   verbose = FALSE,
   auto.assign = TRUE,
+  market = "shares",
+  board = "tqbr",
   api.key = "",
   env = globalenv()
 )
@@ -28,6 +30,10 @@ getOrderbook(
 
 \item{auto.assign}{A logical value indicating whether to automatically assign the resulting object to the current environment. Defaults to TRUE.}
 
+\item{market}{A character string specifying type of market}
+
+\item{board}{A character string specifying type of board}
+
 \item{api.key}{A character string specifying the API key to use when retrieving data from Alor or Tinkoff. Defaults to "".}
 
 \item{env}{environment where the data will be assigned}
@@ -44,6 +50,7 @@ Not for the faint of heart. All profits and losses related are yours and yours a
 \examples{
 getOrderbook('USDTGBP', src = 'kraken')
 getOrderbook('BTC_USDT', src = 'poloniex')
+getOrderbook('SBER', src = 'moex')
 }
 \author{
 Vyacheslav Arbuzov

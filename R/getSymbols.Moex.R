@@ -39,9 +39,25 @@
   periods = c('day'=24, 'hour'=60, '10min'=10, '1min'=1)
   interval = periods[period]
 
+  res = data.table()
   check_ticker_url <- paste0('https://iss.moex.com/iss/securities.json?q=',Symbol.name)
-  res<-jsonlite::fromJSON(txt=check_ticker_url)
-  res<-data.table::data.table(res$securities$data)[V2==Symbol.name]
+  tryCatch(
+    {
+      res<-jsonlite::fromJSON(txt=check_ticker_url)
+      res<-data.table::data.table(res$securities$data)[V2==Symbol.name]
+    },
+           #if an error occurs, tell me the error
+           error=function(e) {
+             message('Server of MOEX not response - try later')
+             return(NULL)
+             #print(e)
+           },
+            #if a warning occurs, tell me the warning
+            warning=function(w) {
+              message('Check your internet connection')
+              return(NULL)
+            }
+  )
 
   if(length(res)==0)
     return(NULL)
@@ -71,7 +87,23 @@
                 '&start=',pos)
 
   dt <- data.table()
-  tdt <- fread(url)
+
+  tryCatch(tdt <- fread(url),
+    #if an error occurs, tell me the error
+    #if an error occurs, tell me the error
+    error=function(e) {
+      message('Server of MOEX not response - try later')
+      return(NULL)
+      #print(e)
+    },
+    #if a warning occurs, tell me the warning
+    warning=function(w) {
+      message('Check your internet connection')
+      return(NULL)
+    }
+  )
+
+
 
   if(nrow(tdt)==0)
     return(NULL)
@@ -94,7 +126,20 @@
                     to,
                     '&interval=',interval,
                     '&start=',pos)
-      tdt = data.table::fread(url)
+      tryCatch(tdt <- fread(url),
+               #if an error occurs, tell me the error
+               error=function(e) {
+                 message('Server of MOEX not response - try later')
+                 return(NULL)
+                 #print(e)
+               },
+               #if a warning occurs, tell me the warning
+               warning=function(w) {
+                 message('Check your internet connection')
+                 return(NULL)
+               }
+      )
+
       if(nrow(tdt)){
         tdt[,timestamp:=as.POSIXct(begin)]
         dt<-rbind(dt, tdt)
