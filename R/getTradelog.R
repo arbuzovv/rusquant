@@ -6,7 +6,6 @@
 #' @param depth Numeric scalar, specifying the number of trades to retrieve (default = 500).
 #' @param src Character scalar, specifying the exchange to retrieve trade logs from. The supported exchanges are: "tinkoff", "alor", "poloniex", "kraken", "binance", "bttrex", "cex", "gate", "gatecoin", "gdax", "gemini", "hitbtc", "liqui", and "lykke".
 #' @param api.key Character scalar, specifying the API key (if required by the exchange).
-#' @param tradeno First number of trade
 #' @param adjust Logical scalar, specifying whether to adjust timestamps for time zones (default = FALSE).
 #' @param return.class Character scalar, specifying the class of the returned object. The supported classes are: "data.table", "data.frame", and "xts" (default = "data.table").
 #' @param index.class Character scalar, specifying the class of the index column. The supported classes are: "Date" and "POSIXct" (default = "Date").
@@ -28,7 +27,6 @@
 "getTradelog" <- function
 (Symbols,depth=500,src='poloniex',api.key = '',
  adjust=FALSE,return.class='data.table',index.class='Date',
- tradeno=1,
  market = 'shares',
  board = 'tqbr',
  verbose=FALSE,
@@ -39,29 +37,37 @@
         {
           engine = ifelse(market == 'shares','stock','futures')
           if(market == 'forts') board = 'rfud'
-          full_url <- sprintf('https://iss.moex.com/iss/engines/%s/markets/%s/boards/%s/securities/%s/trades.json?tradeno=%s',
-                              engine,market, board, Symbols,tradeno)
-          login <- Sys.getenv('MOEX_DATASHOP_LOGIN')
-          password <- Sys.getenv('MOEX_DATASHOP_PASSWORD')
-          cookie_value <- Sys.getenv('MOEX_DATASHOP_COOKIE')
-          if(login == '' & password=='')
-            return('authenticate to ISS Moex using login/password ')
-          headers = c('Cookie' =  paste0('MicexPassportCert=',cookie_value))
-          if(full_url==T) print(full_url)
-          response <- GET(full_url, encode = "json",add_headers(headers))
-          if(response$status_code==200)
+          paginate = TRUE
+          data_pagainated = data.table()
+          tradeno=0
+          while(paginate)
           {
-            json_response <- content(response, "text", encoding = "UTF-8")
-            json_response <- fromJSON(json_response)
-            data_result = data.table(json_response$trades$data)
-            if(nrow(data_result)>0)
+            full_url <- sprintf('https://iss.moex.com/iss/engines/%s/markets/%s/boards/%s/securities/%s/trades.json?tradeno=%s',
+                                engine,market, board, Symbols,tradeno)
+            login <- Sys.getenv('MOEX_DATASHOP_LOGIN')
+            password <- Sys.getenv('MOEX_DATASHOP_PASSWORD')
+            cookie_value <- Sys.getenv('MOEX_DATASHOP_COOKIE')
+            if(login == '' & password=='')
+              return('authenticate to ISS Moex using login/password ')
+            headers = c('Cookie' =  paste0('MicexPassportCert=',cookie_value))
+            response <- GET(full_url, encode = "json",add_headers(headers))
+            if(response$status_code==200)
             {
-              setnames(data_result,json_response$trades$columns)
-              for(col in c('PRICE', 'QUANTITY','TRADENO','TRADINGSESSION','DECIMALS','VALUE','TRADETIME_GRP'))
-                set(data_result, j = col, value = as.numeric(data_result[[col]]))
+              json_response <- content(response, "text", encoding = "UTF-8")
+              json_response <- fromJSON(json_response)
+              data_result = data.table(json_response$trades$data)
+              if(nrow(data_result)>0)
+              {
+                setnames(data_result,json_response$trades$columns)
+                for(col in c('PRICE', 'QUANTITY','TRADENO','TRADINGSESSION','DECIMALS','VALUE','TRADETIME_GRP'))
+                  set(data_result, j = col, value = as.numeric(data_result[[col]]))
+                data_pagainated =  rbind(data_pagainated,data_result)
+                if(nrow(data_result) != 5000) paginate = FALSE
+                if(nrow(data_result) >= 5000) tradeno = max(data_pagainated[,1])
+              }
             }
-            return(data_result)
           }
+          return(data_pagainated)
           if(response$status_code!=200)
             if(verbose) return(content(response, as = "parsed"))
         }

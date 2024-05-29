@@ -12,7 +12,6 @@ getTradelog(
   adjust = FALSE,
   return.class = "data.table",
   index.class = "Date",
-  tradeno = 1,
   market = "shares",
   board = "tqbr",
   verbose = FALSE,
@@ -34,8 +33,6 @@ getTradelog(
 \item{return.class}{Character scalar, specifying the class of the returned object. The supported classes are: "data.table", "data.frame", and "xts" (default = "data.table").}
 
 \item{index.class}{Character scalar, specifying the class of the index column. The supported classes are: "Date" and "POSIXct" (default = "Date").}
-
-\item{tradeno}{First number of trade}
 
 \item{market}{A character string specifying type of market. 'shares' or 'forts'}
 

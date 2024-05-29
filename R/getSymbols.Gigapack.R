@@ -44,14 +44,14 @@ getSymbols.Gigapack <- function(Symbols,
     if(fake == FALSE)
     {
       if(field == '') field = 'close'
-      gigapack.downloadUrl  = paste0('https://api.rusquant.io/gigacandles?symbol=',Symbols.name,'&field=',field,'&orient=table&date=',date)
+      gigapack.downloadUrl  = paste0('https://api.rusquant.ru/gigacandles?symbol=',Symbols.name,'&field=',field,'&orient=table&date=',date)
       data_result  = data.table(fromJSON(gigapack.downloadUrl))
       data_result = data_result[order(date)]
     }
     if(fake == TRUE)
     {
       if(field == '') field = 'close'
-      gigapack.downloadUrl  = paste0('https://api.rusquant.io/altergiga?symbol=',Symbols.name,'&field=',field,'&trim=',trim,'&reps=',reps,'&orient=table')
+      gigapack.downloadUrl  = paste0('https://api.rusquant.ru/altergiga?symbol=',Symbols.name,'&field=',field,'&trim=',trim,'&reps=',reps,'&orient=table')
       data_result  = data.table(fromJSON(gigapack.downloadUrl))
       data_result = data_result[order(date)]
     }
@@ -62,13 +62,13 @@ getSymbols.Gigapack <- function(Symbols,
     if(field!='') field_q = paste0('&field=',field)
     if(fake == FALSE)
     {
-      gigapack.downloadUrl  = paste0('https://api.rusquant.io/gigatech?symbol=',Symbols.name,'&orient=table',field_q)
+      gigapack.downloadUrl  = paste0('https://api.rusquant.ru/gigatech?symbol=',Symbols.name,'&orient=table',field_q)
       data_result  = data.table(fromJSON(gigapack.downloadUrl))
       data_result = data_result[order(date)]
     }
     if(fake == TRUE)
     {
-      gigapack.downloadUrl  = paste0('https://api.rusquant.io/altertech?symbol=',Symbols.name,'&orient=table',field_q,'&trim=',trim,'&reps=',reps)
+      gigapack.downloadUrl  = paste0('https://api.rusquant.ru/altertech?symbol=',Symbols.name,'&orient=table',field_q,'&trim=',trim,'&reps=',reps)
       data_result  = data.table(fromJSON(gigapack.downloadUrl))
       data_result = data_result[order(date)]
     }

@@ -41,7 +41,6 @@
 #' @importFrom jose jwt_split
 #' @importFrom stats runif
 #' @importFrom xts xts
-#'
 #' @export
 
 placeOrder = function(src = 'tinkoff',

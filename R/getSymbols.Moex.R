@@ -33,6 +33,9 @@
              auto.assign=FALSE,
              ...)
   {
+  old <- options()
+  on.exit(options(old))
+  options(timeout=7)
   V2 <- V14 <- V15 <- begin <- high <- low <- volume <- NULL
   for(Symbol.name in Symbols)
   {
@@ -95,11 +98,6 @@
       message('Server of MOEX not response - try later')
       return(NULL)
       #print(e)
-    },
-    #if a warning occurs, tell me the warning
-    warning=function(w) {
-      message('Check your internet connection')
-      return(NULL)
     }
   )
 

@@ -1,8 +1,8 @@
 Package: rusquant
 Type: Package
 Title: Quantitative Trading Framework
-Version: 1.1.0
-Date: 2024-05-12
+Version: 1.1.1
+Date: 2024-05-29
 Author: Vyacheslav Arbuzov[cph, cre, aut], Sergey Edunov[aut]
 Depends: quantmod,data.table,jsonlite,httr,xts
 Imports: XML,stringr,jose,stats,rvest,base64enc
@@ -11,6 +11,6 @@ Description: Collection of functions to retrieve financial data from various sou
 LazyLoad: yes
 License: GPL-3
 Encoding: UTF-8
-URL: https://rusquant.ru,https://docs.rusquant.ru
+URL: https://rusquant.ru
 BugReports: https://github.com/arbuzovv/rusquant/issues
 RoxygenNote: 7.2.3

@@ -2,11 +2,10 @@
 % Please edit documentation in R/getSymbols.MarketWatch.R
 \name{getSymbols.MarketWatch}
 \alias{getSymbols.MarketWatch}
-\title{MarketWatch Alor data}
+\title{MarketWatch  data}
 \usage{
 getSymbols.MarketWatch(
   Symbols,
-  env = globalenv(),
   from = "2007-01-01",
   to = Sys.Date(),
   adjust = FALSE,
@@ -20,8 +19,6 @@ getSymbols.MarketWatch(
 }
 \arguments{
 \item{Symbols}{A character vector specifying the name of the financial instrument(s) to retrieve.}
-
-\item{env}{An environment where the data should be loaded.}
 
 \item{from}{A character string specifying the starting date for the historical data in the format "YYYY-MM-DD".}
 
@@ -51,8 +48,8 @@ This function retrieves historical financial data for a given symbol from the Ma
 Not for the faint of heart. All profits and losses related are yours and yours alone. If you don't like it, write it yourself.
 }
 \examples{
-getSymbols.MarketWatch(Symbols = 'liborusd3m',market = 'interestrate',countrycode = 'mr')
-getSymbols.MarketWatch(Symbols = 'tmubmusd03m',market = 'bond',countrycode = 'bx')
+getSymbols.MarketWatch(Symbols = 'liborusd3m',market = 'interestrate',countrycode = 'mx')
+#getSymbols.MarketWatch(Symbols = 'tmubmusd03m',market = 'bond',countrycode = 'bx')
 }
 \author{
 Vyacheslav Arbuzov

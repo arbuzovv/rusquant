@@ -50,8 +50,6 @@ Not for the faint of heart. All profits and losses related are yours and yours a
 \examples{
 getOrderbook('USDTGBP', src = 'kraken')
 getOrderbook('BTC_USDT', src = 'poloniex')
-getOrderbook('SBER', src = 'moex')
-getOrderbook('SiH5', src = 'moex',market='forts')
 }
 \author{
 Vyacheslav Arbuzov

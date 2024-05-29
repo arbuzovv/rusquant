@@ -9,7 +9,7 @@
 #' @note Not for the faint of heart. All profits and losses related are yours and yours alone. If you don't like it, write it yourself.
 #' @author Vyacheslav Arbuzov
 #' @examples
-#' getEarnings(from = Sys.Date(),to = Sys.Date()+3,country='Belgium')
+#' getEarnings(from = Sys.Date(),to = Sys.Date()+5,country='Belgium')
 #' @export
 
 getEarnings <- function(from=Sys.Date()-5,to=Sys.Date()+5,country='United States')
@@ -134,7 +134,7 @@ getEarnings <- function(from=Sys.Date()-5,to=Sys.Date()+5,country='United States
       Records_result <- Records
   }
   }
-  return(unique(Records_result))
+  tryCatch(unique(Records_result), error = function(e) print('no current data'))
 }
 
 

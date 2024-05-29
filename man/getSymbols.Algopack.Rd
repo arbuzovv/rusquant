@@ -55,6 +55,8 @@ getSymbols.Algopack(date = '2024-05-10',type = 'oi')
 getSymbols.Algopack(Symbols = 'Si',type = 'oi')
 # market concentration for available stocks
 #getSymbols.Algopack(date = '2024-05-10',type = 'hi2')
+# market concentration for current stock
+#devgetSymbols.Algopack('SBER',from = '2023-10-24',to='2023-11-04',type = 'hi2')
 # market concentration for available fx
 #getSymbols.Algopack(date = '2024-05-10',type = 'hi2',market='fx')
 # market concentration for available futures

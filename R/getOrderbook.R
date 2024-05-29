@@ -20,8 +20,6 @@
 #' @examples
 #' getOrderbook('USDTGBP', src = 'kraken')
 #' getOrderbook('BTC_USDT', src = 'poloniex')
-#' getOrderbook('SBER', src = 'moex')
-#' getOrderbook('SiH5', src = 'moex',market='forts')
 #' @export
 
 "getOrderbook" <- function #S3 function (Poloniex is a class of first argument)
@@ -46,9 +44,15 @@
 		{
 		  engine = ifelse(market == 'shares','stock','futures')
 		  if(market == 'forts') board = 'rfud'
+		  login <- Sys.getenv('MOEX_DATASHOP_LOGIN')
+		  password <- Sys.getenv('MOEX_DATASHOP_PASSWORD')
+		  cookie_value <- Sys.getenv('MOEX_DATASHOP_COOKIE')
+		  if(login == '' & password=='')
+		    return('authenticate to ISS Moex using login/password ')
+		  headers = c('Cookie' =  paste0('MicexPassportCert=',cookie_value))
 		  full_url <- sprintf('https://iss.moex.com/iss/engines/%s/markets/%s/boards/%s/securities/%s/orderbook.json',
 		                      engine,market, board, Symbols)
-		  response <- GET(full_url, encode = "json")
+		  response <- GET(full_url, encode = "json",add_headers(headers))
 		  if(response$status_code==200)
 		  {
 		    json_response <- content(response, "text", encoding = "UTF-8")

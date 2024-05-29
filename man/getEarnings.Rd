@@ -27,7 +27,7 @@ This function retrieves earnings data from the investing.com website for a speci
 Not for the faint of heart. All profits and losses related are yours and yours alone. If you don't like it, write it yourself.
 }
 \examples{
-getEarnings(from = Sys.Date(),to = Sys.Date()+3,country='Belgium')
+getEarnings(from = Sys.Date(),to = Sys.Date()+5,country='Belgium')
 }
 \author{
 Vyacheslav Arbuzov
