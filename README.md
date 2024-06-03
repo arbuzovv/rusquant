@@ -1,3 +1,7 @@
+```r
+!!! warning!!! in version 1.1.1 new method of auth to algopack, see ?auth method
+```
+
 # Rusquant
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/rusquant)](https://cran.r-project.org/package=rusquant) [![CRAN_Downloads](https://cranlogs.r-pkg.org/badges/last-month/rusquant)](https://cran.r-project.org/package=rusquant) [![CRAN_Ago](https://www.r-pkg.org/badges/ago/rusquant)](https://cran.r-project.org/package=rusquant)
 ### Intro
