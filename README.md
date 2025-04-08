@@ -23,7 +23,11 @@ which you can install via:
 install.packages("rusquant")
 ```
 
+<<<<<<< Updated upstream
 To install the development version (1.1.1), you need to clone the repository and build
+=======
+To install the development version (1.2.0), you need to clone the repository and build
+>>>>>>> Stashed changes
 from source, or run one of:
 
 ```r

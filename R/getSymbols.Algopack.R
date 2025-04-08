@@ -44,28 +44,27 @@ getSymbols.Algopack <- function(Symbols='',
                             auto.assign=FALSE,
                             ...)
 {
-  login <- Sys.getenv('MOEX_DATASHOP_LOGIN')
-  password <- Sys.getenv('MOEX_DATASHOP_PASSWORD')
-  cookie_value <- Sys.getenv('MOEX_DATASHOP_COOKIE')
-  if(login == '' & password=='')
-    return('authenticate to ISS Moex using login/password ')
+  api_key_value <- Sys.getenv('MOEX_API_KEY')
+  if(api_key_value == '' )
+    return('authenticate to ISS Moex')
   for(i in 1:length(Symbols))
   {
   Symbols.name = Symbols[i]
-  algopack.downloadUrl <- paste0('https://iss.moex.com/iss/datashop/algopack/',market,'/',type,'/',tolower(Symbols.name),'.json')
+  
+  algopack.downloadUrl <- paste0('https://apim.moex.com/iss/datashop/algopack/',market,'/',type,'/',tolower(Symbols.name),'.json')
   if(Symbols.name=='')
-    algopack.downloadUrl <- paste0('https://iss.moex.com/iss/datashop/algopack/',market,'/',type,'.json')
+    algopack.downloadUrl <- paste0('https://apim.moex.com/iss/datashop/algopack/',market,'/',type,'.json')
   if(type == 'oi')
   {
-    algopack.downloadUrl <- paste0('https://iss.moex.com/iss/analyticalproducts/futoi/securities.json')
+    algopack.downloadUrl <- paste0('https://apim.moex.com/iss/analyticalproducts/futoi/securities.json')
     if(Symbols.name!='')
-      algopack.downloadUrl <- paste0('https://iss.moex.com/iss/analyticalproducts/futoi/securities/',tolower(Symbols.name),'.json')
+      algopack.downloadUrl <- paste0('https://apim.moex.com/iss/analyticalproducts/futoi/securities/',tolower(Symbols.name),'.json')
   }
 
   paginate = TRUE
   data_result = data.table()
   pagination_page = 0
-  headers = c('Cookie' =  paste0('MicexPassportCert=',cookie_value))
+  headers = c('Authorization' =  paste0('Bearer ',api_key_value))
   while(paginate)
   {
     algopack.params = list('from'=from,
