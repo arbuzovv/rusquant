@@ -1,6 +1,3 @@
-```r
-!!! warning!!! in version 1.1.1 new method of auth to algopack, see ?auth method
-```
 
 # Rusquant
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/rusquant)](https://cran.r-project.org/package=rusquant) [![CRAN_Downloads](https://cranlogs.r-pkg.org/badges/last-month/rusquant)](https://cran.r-project.org/package=rusquant) [![CRAN_Ago](https://www.r-pkg.org/badges/ago/rusquant)](https://cran.r-project.org/package=rusquant)
@@ -23,11 +20,7 @@ which you can install via:
 install.packages("rusquant")
 ```
 
-<<<<<<< Updated upstream
-To install the development version (1.1.1), you need to clone the repository and build
-=======
 To install the development version (1.2.0), you need to clone the repository and build
->>>>>>> Stashed changes
 from source, or run one of:
 
 ```r
