@@ -13,14 +13,9 @@ If you are interested in supporting the ongoing development and maintenance of r
 
 ### Installation
 
-The current release  (1.1.1) is available on [CRAN](https://CRAN.R-project.org/package=rusquant),
-which you can install via:
+The current release was removed from [CRAN](https://CRAN.R-project.org/package=rusquant),
 
-```r
-install.packages("rusquant")
-```
-
-To install the development version (1.2.0), you need to clone the repository and build
+To install the development version (1.1.5), you need to clone the repository and build
 from source, or run one of:
 
 ```r
@@ -68,15 +63,9 @@ getDividends(from = '2023-08-01',to = '2023-08-05',country = 'United States')
 ### Get microstructure data from [AlgoPack](https://www.moex.com/ru/algopack)
 
 ``` r
-auth(src = "Moex",login = "arbuzov@yandex.ru",password = "mypass")
+auth(api_key = "my token")
 getSymbols.Algopack('SBER',from = '2023-10-24',to='2023-11-04')
 getSymbols.Algopack('ROSN',from = '2023-10-24',to='2023-11-04',type = 'obstats')
-
-# open interest for available futures
-getSymbols.Algopack(date = '2024-05-10',type = 'oi')
-
-# open interest for Si futures
-getSymbols.Algopack(Symbols = 'Si',type = 'oi')
 
 # market concentration for available stocks
 #getSymbols.Algopack(date = '2024-05-10',type = 'hi2')

@@ -16,15 +16,11 @@
 #' @note Not for the faint of heart. All profits and losses related are yours and yours alone. If you don't like it, write it yourself.
 #' @author Vyacheslav Arbuzov
 #' @examples
-#' getSymbols.Algopack('SBER',from = '2023-10-24',to='2023-11-04')
-#' # open interest for available futures
-#' getSymbols.Algopack(date = '2024-05-10',type = 'oi')
-#' # open interest for Si futures
-#' getSymbols.Algopack(Symbols = 'Si',type = 'oi')
+#' x = getSymbols.Algopack('SBER',from = '2023-10-24',to='2023-11-04')
 #' # market concentration for available stocks
 #' #getSymbols.Algopack(date = '2024-05-10',type = 'hi2')
 #' # market concentration for current stock
-#' #devgetSymbols.Algopack('SBER',from = '2023-10-24',to='2023-11-04',type = 'hi2')
+#' #getSymbols.Algopack('SBER',from = '2023-10-24',to='2023-11-04',type = 'hi2')
 #' # market concentration for available fx
 #' #getSymbols.Algopack(date = '2024-05-10',type = 'hi2',market='fx')
 #' # market concentration for available futures
@@ -33,94 +29,81 @@
 #' #getSymbols.Algopack(Symbols = 'CNYRUB_TOM',type = 'hi2',market='fx')
 #' @export
 
+
 getSymbols.Algopack <- function(Symbols='',
-                            env = globalenv(),
-                            from=Sys.Date()-30,
-                            to=Sys.Date(),
-                            date=Sys.Date(),
-                            verbose=FALSE,
-                            type = 'tradestats',
-                            market = 'eq',
-                            auto.assign=FALSE,
-                            ...)
+                                env = globalenv(),
+                                from=Sys.Date()-30,
+                                to=Sys.Date(),
+                                date=Sys.Date(),
+                                verbose=FALSE,
+                                type = 'tradestats',
+                                market = 'eq',
+                                auto.assign=FALSE,
+                                ...)
 {
-  api_key_value <- Sys.getenv('MOEX_API_KEY')
-  if(api_key_value == '' )
-    return('authenticate to ISS Moex')
+  api_key <- Sys.getenv('MOEX_DATASHOP_API_KEY')
   for(i in 1:length(Symbols))
   {
-  Symbols.name = Symbols[i]
-  
-  algopack.downloadUrl <- paste0('https://apim.moex.com/iss/datashop/algopack/',market,'/',type,'/',tolower(Symbols.name),'.json')
-  if(Symbols.name=='')
-    algopack.downloadUrl <- paste0('https://apim.moex.com/iss/datashop/algopack/',market,'/',type,'.json')
-  if(type == 'oi')
-  {
-    algopack.downloadUrl <- paste0('https://apim.moex.com/iss/analyticalproducts/futoi/securities.json')
-    if(Symbols.name!='')
-      algopack.downloadUrl <- paste0('https://apim.moex.com/iss/analyticalproducts/futoi/securities/',tolower(Symbols.name),'.json')
-  }
+    Symbols.name = Symbols[i]
 
-  paginate = TRUE
-  data_result = data.table()
-  pagination_page = 0
-  headers = c('Authorization' =  paste0('Bearer ',api_key_value))
-  while(paginate)
-  {
-    algopack.params = list('from'=from,
-                           'till'=to,
-                           start=pagination_page)
+    algopack.downloadUrl <- paste0('https://apim.moex.com/iss/datashop/algopack/',market,'/',type,'/',tolower(Symbols.name),'.json')
     if(Symbols.name=='')
-      algopack.params = list('date'=date,
+      algopack.downloadUrl <- paste0('https://apim.moex.com/iss/datashop/algopack/',market,'/',type,'.json')
+    if(type == 'oi')
+    {
+      algopack.downloadUrl <- paste0('https://apim.moex.com/iss/analyticalproducts/futoi/securities.json')
+      if(Symbols.name!='')
+        algopack.downloadUrl <- paste0('https://apim.moex.com/iss/analyticalproducts/futoi/securities/',tolower(Symbols.name),'.json')
+    }
+
+    paginate = TRUE
+    data_result = data.table()
+    pagination_page = 0
+    headers = c('Authorization' =  paste0('Bearer ',api_key))
+    while(paginate)
+    {
+      algopack.params = list('from'=from,
+                             'till'=to,
                              start=pagination_page)
-    tryCatch(
+      if(Symbols.name=='')
+        algopack.params = list('date'=date,
+                               start=pagination_page)
+      response <- GET(algopack.downloadUrl, encode = "json",query = algopack.params,add_headers(headers))
+      if(verbose==TRUE) print(response$url)
+      if(response$status_code==200)
       {
-        response <- GET(algopack.downloadUrl, encode = "json",query = algopack.params,add_headers(headers))
-        if(verbose==T) print(response$url)
-        if(response$status_code==200)
+        json_response <- content(response, "text", encoding = "UTF-8")
+        json_response <- fromJSON(json_response,simplifyMatrix = T)
+        pagination_page = json_response$data.cursor$data[1,1]+ json_response$data.cursor$data[1,3]
+        data_result = rbind(data_result,data.table(json_response$data$data))
+        if(type == 'oi')
         {
-          json_response <- content(response, "text", encoding = "UTF-8")
-          json_response <- fromJSON(json_response,simplifyMatrix = T)
-          pagination_page = json_response$data.cursor$data[1,1]+ json_response$data.cursor$data[1,3]
-          data_result = rbind(data_result,data.table(json_response$data$data))
-          if(type == 'oi')
-          {
-            data_result = rbind(data_result,data.table(json_response$futoi$data))
-            setnames(data_result,json_response$futoi$columns)
-            paginate = FALSE
-          }
-
-
-          if(pagination_page >json_response$data.cursor$data[1,2])
-          {
-            paginate = FALSE
-            if(nrow(data_result)!=0) setnames(data_result,json_response$data$columns)
-          }
+          data_result = rbind(data_result,data.table(json_response$futoi$data))
+          setnames(data_result,json_response$futoi$columns)
+          paginate = FALSE
         }
-        if(response$status_code!=200)
-          if(verbose) return(content(response, as = "parsed"))
-      },
-      #if an error occurs, tell me the error
-      error=function(e) {
-        message('Server of MOEX not response - try later')
-        #print(e)
-      },
-      #if a warning occurs, tell me the warning
-      warning=function(w) {
-        message('Check your internet connection')
+
+
+        if(pagination_page >json_response$data.cursor$data[1,2])
+        {
+          paginate = FALSE
+          if(nrow(data_result)!=0) setnames(data_result,json_response$data$columns)
+        }
       }
-    )
-  }
-  if(type == 'hi2')
-    data_result$value = as.numeric(data_result$value)
-  if(type != 'hi2' & type != 'oi')
+      if(response$status_code!=200)
+        if(verbose) return(content(response, as = "parsed"))
+    }
+    if(type == 'hi2')
+      data_result$value = as.numeric(data_result$value)
+    if(type != 'hi2' & type != 'oi')
     {
       cols <- colnames(data_result)[-c(1:3,ncol(data_result))]
+      cols = cols[-20]
       data_result[ , (cols) := lapply(.SD, as.numeric), .SDcols = cols]
     }
-  if(auto.assign){
-    assign(Symbols[[i]], data_result, env)
-  }
+    if(auto.assign){
+      assign(Symbols[[i]], data_result, env)
+    }
   }
   if(auto.assign){
     return(Symbols)

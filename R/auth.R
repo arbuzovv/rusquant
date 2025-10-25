@@ -5,25 +5,18 @@
 #' other functions in the package to authenticate API requests.
 #'
 #' @param src datasource name.
-#' @param login login of datasource
-#' @param password password of datasource
+#' @param api_key api_key of datasource
 #' @return Invisible NULL, side-effect function setting an environment variable.
 #' @examples
 #' \dontrun{
-#'   auth(login = "user@email.com",password = "mypassword")
+#'   auth(api_key = "")
 #' }
 #' @export
 auth <- function(src='Moex',api_key) {
   if(src=='Moex')
   {
-
-    if (nzchar(api_key)) {
-      Sys.setenv(MOEX_API_KEY = api_key)
-    } else {
-      stop("Invalid login. Login must be a non-empty string.")
-    }
+      Sys.setenv(MOEX_DATASHOP_API_KEY = api_key)
   }
-  invisible(NULL)
 }
 
 

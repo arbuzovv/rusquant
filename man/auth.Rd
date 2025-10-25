@@ -4,14 +4,12 @@
 \alias{auth}
 \title{Set creds for Datasource}
 \usage{
-auth(src = "Moex", login, password)
+auth(src = "Moex", api_key)
 }
 \arguments{
 \item{src}{datasource name.}
 
-\item{login}{login of datasource}
-
-\item{password}{password of datasource}
+\item{api_key}{api_key of datasource}
 }
 \value{
 Invisible NULL, side-effect function setting an environment variable.
@@ -23,6 +21,6 @@ other functions in the package to authenticate API requests.
 }
 \examples{
 \dontrun{
-  auth(login = "user@email.com",password = "mypassword")
+  auth(api_key = "")
 }
 }

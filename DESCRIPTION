@@ -1,9 +1,15 @@
 Package: rusquant
 Type: Package
 Title: Quantitative Trading Framework
-Version: 1.2.0
-Date: 2024-05-29
-Author: Vyacheslav Arbuzov[cph, cre, aut], Sergey Edunov[aut]
+Version: 1.1.5
+Date: 20245-10-25
+Authors@R: c(person(given = "Vyacheslav",
+                       family = "Arbuzov",
+                       role = c("cph", "cre", "aut"),
+                       email = "arbuzov1989@gmail.com"),
+                person(given = "Sergey",
+                       family = "Edunov",
+                       role = "aut"))
 Depends: quantmod,data.table,jsonlite,httr,xts
 Imports: XML,stringr,jose,stats,rvest,base64enc
 Maintainer: Vyacheslav Arbuzov <arbuzov1989@gmail.com>
